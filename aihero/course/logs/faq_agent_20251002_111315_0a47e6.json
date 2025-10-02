@@ -1,0 +1,153 @@
+{
+  "agent_name": "faq_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant for a  course. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "can I join late and get a certificate?",
+          "timestamp": "2025-10-02T11:13:13.965399+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a  course. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "The user asks: \"can I join late and get a certificate?\" They are likely referring to a course. We need to search the course FAQ index. Use search with query.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"join late certificate\"}",
+          "tool_call_id": "fc_594a062b-0848-4664-a6ed-84efabf1a39d",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 238,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 62,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T11:13:14+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-a655c12a-faa0-43b1-9efc-9fff1d90ece3",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "id": "3774a79c13",
+              "question": "Certificate: Do I need to do the homeworks to get the certificate?",
+              "sort_order": 14,
+              "content": "No, as long as you complete the peer-reviewed capstone projects on time, you can receive the certificate. You do not need to do the homeworks if you join late, for example.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/014_3774a79c13_certificate-do-i-need-to-do-the-homeworks-to-get-t.md"
+            },
+            {
+              "id": "900f60fd25",
+              "question": "Certificate - Can I follow the course in a self-paced mode and get a certificate?",
+              "sort_order": 15,
+              "content": "No, you can only get a certificate if you finish the course with a \u201clive\u201d cohort. We don't award certificates for the self-paced mode. The reason is you need to peer-review capstone(s) after submitting a project. You can only peer-review projects at the time the course is running.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/015_900f60fd25_certificate-can-i-follow-the-course-in-a-self-pace.md"
+            },
+            {
+              "id": "6314bc3029",
+              "images": [
+                {
+                  "description": "image #1",
+                  "id": "image_1",
+                  "path": "images/data-engineering-zoomcamp/image_1813f02b.png"
+                }
+              ],
+              "question": "How do I get my certificate?",
+              "sort_order": 46,
+              "content": "There'll be an announcement in Telegram and the course channel for:\n\n- Checking that your full name is displayed correctly on the Certificate (see Editing course profile on the Course Management webpage).\n- Notifying when the grading is completed.\n\nYou will find it in your course profile (you need to be\nlogged it). \n\nFor 2025 the link to the course profile is this:\n\n`https://courses.datatalks.club/de-zoomcamp-2025/enrollment`\n\nFor other editions, change \"2025\" to your edition.\n\nAfter the second announcement, follow instructions in [certificates.md](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/certificates.md) on how to generate the Certificate document yourself.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/046_6314bc3029_how-do-i-get-my-certificate.md"
+            },
+            {
+              "id": "4dbd2eea47",
+              "question": "Homework: Are late submissions of homework allowed?",
+              "sort_order": 17,
+              "content": "No, late submissions are not allowed. However, if the form is still open after the due date, you can still submit the homework. Confirm your submission by checking the date-timestamp on the Course page. Ensure you are logged in.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/017_4dbd2eea47_homework-are-late-submissions-of-homework-allowed.md"
+            },
+            {
+              "id": "542abbcb6a",
+              "question": "wget - ERROR: cannot verify <website> certificate  (MacOS)",
+              "sort_order": 6,
+              "content": "Firstly, make sure that you add `!` before `wget` if you\u2019re running your command in a Jupyter Notebook or CLI. Then, you can check one of these two things (from CLI):\n\n- **Using the Python library wget installed with pip:**\n\n  ```bash\n  python -m wget <url>\n  ```\n\n- **Use the usual command and add `--no-check-certificate` at the end:**\n\n  ```bash\n  !wget <website_url> --no-check-certificate\n  ```",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/006_542abbcb6a_wget-error-cannot-verify-website-certificate-macos.md"
+            }
+          ],
+          "tool_call_id": "fc_594a062b-0848-4664-a6ed-84efabf1a39d",
+          "metadata": null,
+          "timestamp": "2025-10-02T11:13:14.475488+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a  course. \n\nUse the search tool to find relevant information from the course materials before answering questions.\n\nIf you can find specific information through search, use it to provide accurate answers.\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "We got search results. The user asks: \"can I join late and get a certificate?\" The relevant FAQ: \"Certificate: Do I need to do the homeworks to get the certificate?\" says: \"No, as long as you complete the peer-reviewed capstone projects on time, you can receive the certificate. You do not need to do the homeworks if you join late, for example.\" So answer: yes, if you join late, you still can get certificate as long as you complete capstone on time. Provide details: need to be part of a live cohort, complete peer-reviewed capstone projects on time, no need to do homeworks. Provide steps. Also mention need to be in the cohort, sign up, etc. Provide relevant info.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "content": "**Yes \u2013 you can still earn a certificate even if you join the cohort late.**  \n\nThe key requirements are:\n\n| Requirement | What you need to do |\n|-------------|---------------------|\n| **Be part of a live cohort** | You must register for a scheduled cohort (self\u2011paced tracks do not award certificates). |\n| **Submit the peer\u2011reviewed capstone projects on time** | These are the only assignments that are required for certification. As long as you turn in the capstone projects by their deadlines and receive peer reviews, you are eligible. |\n| **No need to do the homeworks if you join late** | The FAQ specifically states: \u201cYou do **not** need to do the homeworks if you join late, for example.\u201d |\n\n---\n\n### How to get the certificate once you\u2019re in\n\n1. **Join the cohort** \u2013 sign up via the course enrollment page for the edition you\u2019re interested in (e.g., 2025: https://courses.datatalks.club/de-zoomcamp-2025/enrollment).\n2. **Complete the capstone(s)** \u2013 submit your projects before their deadlines and ensure you receive the required peer reviews.\n3. **Check the Telegram and course channel announcements** \u2013 the instructor will post when:\n   - Your full name appears correctly on the certificate (you can edit your profile if needed).\n   - Grading is finished.\n4. **Generate the PDF** \u2013 after the grading announcement, follow the instructions in the repository file `[certificates.md](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/certificates.md)` to produce the certificate document yourself.\n\n---\n\n#### Bottom line\n\n- **Late joiners are fine** \u2013 just hit the capstone deadlines.  \n- **Homeworks are optional** for certification (unless you want them for extra practice).  \n- **Only live cohorts** confer certificates; self\u2011paced tracks do not.\n\nGood luck, and enjoy the course!",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1066,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 569,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T11:13:15+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-434a2c8b-5982-4079-ba8a-da7d7ab12ee9",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "user"
+}

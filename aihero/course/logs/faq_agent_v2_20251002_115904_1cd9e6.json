@@ -1,0 +1,153 @@
+{
+  "agent_name": "faq_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "can I join late and get a certificate?",
+          "timestamp": "2025-10-02T11:59:03.812232+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "The user asks: \"can I join late and get a certificate?\" They likely refer to a course. We need to search relevant information from the course materials. Let's search.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"join late certificate course\"}",
+          "tool_call_id": "fc_e7f00dd1-c1a2-4f76-a56d-fee881676d2b",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 298,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 62,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T11:59:04+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-6dd6f1e2-71f7-4dde-b944-6b60392877d9",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "id": "3774a79c13",
+              "question": "Certificate: Do I need to do the homeworks to get the certificate?",
+              "sort_order": 14,
+              "content": "No, as long as you complete the peer-reviewed capstone projects on time, you can receive the certificate. You do not need to do the homeworks if you join late, for example.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/014_3774a79c13_certificate-do-i-need-to-do-the-homeworks-to-get-t.md"
+            },
+            {
+              "id": "900f60fd25",
+              "question": "Certificate - Can I follow the course in a self-paced mode and get a certificate?",
+              "sort_order": 15,
+              "content": "No, you can only get a certificate if you finish the course with a \u201clive\u201d cohort. We don't award certificates for the self-paced mode. The reason is you need to peer-review capstone(s) after submitting a project. You can only peer-review projects at the time the course is running.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/015_900f60fd25_certificate-can-i-follow-the-course-in-a-self-pace.md"
+            },
+            {
+              "id": "6314bc3029",
+              "images": [
+                {
+                  "description": "image #1",
+                  "id": "image_1",
+                  "path": "images/data-engineering-zoomcamp/image_1813f02b.png"
+                }
+              ],
+              "question": "How do I get my certificate?",
+              "sort_order": 46,
+              "content": "There'll be an announcement in Telegram and the course channel for:\n\n- Checking that your full name is displayed correctly on the Certificate (see Editing course profile on the Course Management webpage).\n- Notifying when the grading is completed.\n\nYou will find it in your course profile (you need to be\nlogged it). \n\nFor 2025 the link to the course profile is this:\n\n`https://courses.datatalks.club/de-zoomcamp-2025/enrollment`\n\nFor other editions, change \"2025\" to your edition.\n\nAfter the second announcement, follow instructions in [certificates.md](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/certificates.md) on how to generate the Certificate document yourself.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/046_6314bc3029_how-do-i-get-my-certificate.md"
+            },
+            {
+              "id": "9e508f2212",
+              "question": "Course: When does the course start?",
+              "sort_order": 1,
+              "content": "The next cohort starts January 13th, 2025. More info at [DTC](https://datatalks.club/blog/guide-to-free-online-courses-at-datatalks-club.html).\n\n- Register before the course starts using this [link](https://airtable.com/shr6oVXeQvSI5HuWD).\n- Join the [course Telegram channel with announcements](https://t.me/dezoomcamp).\n- Don\u2019t forget to register in DataTalks.Club's Slack and join the channel.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/001_9e508f2212_course-when-does-the-course-start.md"
+            },
+            {
+              "id": "4dbd2eea47",
+              "question": "Homework: Are late submissions of homework allowed?",
+              "sort_order": 17,
+              "content": "No, late submissions are not allowed. However, if the form is still open after the due date, you can still submit the homework. Confirm your submission by checking the date-timestamp on the Course page. Ensure you are logged in.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/017_4dbd2eea47_homework-are-late-submissions-of-homework-allowed.md"
+            }
+          ],
+          "tool_call_id": "fc_e7f00dd1-c1a2-4f76-a56d-fee881676d2b",
+          "metadata": null,
+          "timestamp": "2025-10-02T11:59:04.137602+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "We found relevant FAQ. User asked: \"can I join late and get a certificate?\" This relates to certificate and joining late. We saw answer: \"No, as long as you complete the peer-reviewed capstone projects on time, you can receive the certificate. You do not need to do the homeworks if you join late, for example.\" That is about certificate for late joiners. So answer: yes you can join late as long as you finish capstone on time. Provide reference. Also note you must join live cohort, not self-paced. Provide info. Use link.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "content": "You can indeed join a cohort late and still earn a certificate\u2014provided you finish the **peer\u2011reviewed capstone projects on time**.  \nThe course does not require you to complete the homework assignments if you\u2019re a late\u2011arriving student. Just make sure you stay on top of the capstone deadlines and participate in the required peer reviews while the cohort is running.\n\n> **Reference**:  \n> *[Certificate: Do I need to do the homeworks to get the certificate?](https://github.com/DataTalksClub/faq/blob/main/faq-main/_questions/data-engineering-zoomcamp/general/014_3774a79c13_certificate-do-i-need-to-do-the-homeworks-to-get-t.md)*",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1110,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 277,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T11:59:04+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-b22eda80-d53b-4d21-8513-c66e80cb71d0",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "user"
+}

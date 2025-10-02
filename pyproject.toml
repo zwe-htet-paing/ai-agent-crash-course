@@ -1,0 +1,22 @@
+[project]
+name = "ai-agent-crash-course"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "groq>=0.32.0",
+    "minsearch>=0.0.5",
+    "openai>=2.0.1",
+    "pandas>=2.3.3",
+    "pydantic-ai>=1.0.13",
+    "python-frontmatter>=1.1.0",
+    "requests>=2.32.5",
+    "sentence-transformers>=5.1.1",
+    "tqdm>=4.67.1",
+]
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+]

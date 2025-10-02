@@ -1,0 +1,3 @@
+export GROQ_API_KEY='groq-api-key'
+
+export OPENAI_API_KEY='openai-api-key'

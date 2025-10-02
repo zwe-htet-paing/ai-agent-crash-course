@@ -1,0 +1,293 @@
+{
+  "agent_name": "faq_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "How do I launch a GitHub Codespace for my data engineering project, and what pre-installed tools (like Docker, Python, etc.) are available in that environment?",
+          "timestamp": "2025-10-02T17:00:57.431897+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "User asks: How to launch a GitHub Codespace for a data engineering project, and what pre-installed tools are available (Docker, Python, etc.). We need to search the repository. Let's use search.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"GitHub Codespace launch data engineering project pre-installed tools Docker Python\"}",
+          "tool_call_id": "fc_bc30dd20-621e-4cab-959b-1dc6e01ccbe8",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 323,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 78,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:00:57+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-937ebaa5-d6f8-4edc-8495-4e4b3faac4c5",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "id": "5b4fb0c0a8",
+              "question": "Environment - Is GitHub codespaces an alternative to using cli/git bash to ingest the data and create a docker file?",
+              "sort_order": 23,
+              "content": "GitHub Codespaces offers you computing Linux resources with many pre-installed tools (Docker, Docker Compose, Python).\n\nYou can also open any GitHub repository in a GitHub Codespace.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/023_5b4fb0c0a8_environment-is-github-codespaces-an-alternative-to.md"
+            },
+            {
+              "id": "bcc6781b6e",
+              "question": "How do I launch Kestra?",
+              "sort_order": 3,
+              "content": "To launch Kestra, follow these instructions:\n\n### For Linux\n\nStart Docker with the following command:\n\n```bash\ndocker run \\\n  --pull=always \\\n  --rm \\\n  -it \\\n  -p 8080:8080 \\\n  --user=root \\\n  -v /var/run/docker.sock:/var/run/docker.sock \\\n  -v /tmp:/tmp \\\n  kestra/kestra:latest server local\n```\n\nOnce it is running, you can log in to the dashboard at `localhost:8080`.\n\n### For Windows\n\nRefer to the Kestra GitHub repository for detailed instructions: [https://github.com/kestra-io/kestra](https://github.com/kestra-io/kestra)\n\n\nSample `docker-compose` for Kestra:\n\n```yaml\nkestra:\n  build: .\n  image: kestra/kestra:latest\n  container_name: kestra\n  user: \"0:0\"\n  environment:\n    DOCKER_HOST: tcp://host.docker.internal:2375  # for Windows\n    KESTRA_CONFIGURATION: |\n      kestra:\n        repository:\n          type: h2\n        queue:\n          type: memory\n        storage:\n          type: local\n          local:\n            basePath: /app/storage\n        tasks:\n          tmp-dir:\n            path: /app/tmp\n        plugins:\n          repositories:\n            - id: central\n              type: maven\n              url: [repo.maven.apache.org](https://repo.maven.apache.org/maven2)\n          definitions:\n            - io.kestra.plugin.core:core:latest\n            - io.kestra.plugin.scripts:python:1.3.4\n            - io.kestra.plugin.http:http:latest\n    KESTRA_TASKS_TMP_DIR_PATH: /app/tmp\n  ports:\n    - \"8080:8080\"\n  volumes:\n    - //var/run/docker.sock:/var/run/docker.sock  # Windows path\n    - /yourpath/.dbt:/app/.dbt\n    - /yourpath/kestra/plugins:/app/plugins\n    - /yourpath/kestra/workflows:/app/workflows\n    - /yourpath/kestra/storage:/app/storage\n    - /yourpath//kestra/tmp:/app/tmp\n    - /yourpath//dbt_prj:/app/workflows/dbt_project\n    - /yourpath//my-creds.json:/app/.dbt/my-creds.json\n  command: server standalone\n```",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-2/003_bcc6781b6e_how-do-i-launch-kestra.md"
+            },
+            {
+              "id": "5c5321c295",
+              "question": "Project 1 & Project 2",
+              "sort_order": 4,
+              "content": "There is only ONE project for this Zoomcamp. You do not need to submit or create two projects.\n\nThere are simply TWO chances to pass the course. You can use the Second Attempt if you:\n\n- Fail the first attempt\n- Do not have the time due to other engagements such as holidays or sickness to enter your project into the first attempt.\n\n**Project Evaluation - Reproducibility**\n\nEven with thorough documentation, ensuring that a peer reviewer can follow your steps can be challenging. Here\u2019s how this criterion will be evaluated:\n\n> \"Ideally yes, you should try to re-run everything. But I understand that not everyone has time to do it, so if you check the code by looking at it and try to spot errors, places with missing instructions, and so on - then it's already great.\"\n\n**Certificates: How do I get it?**\n\nSee the `certificate.mdx` file.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/project/004_5c5321c295_project-1-project-2.md"
+            },
+            {
+              "id": "070766ca79",
+              "question": "Environment: Do we really have to use GitHub codespaces? I already have PostgreSQL & Docker installed.",
+              "sort_order": 24,
+              "content": "It's up to you which platform and environment you use for the course.\n\nGitHub Codespaces or GCP VM are just possible options, but you can do the entire course from your laptop.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/024_070766ca79_environment-do-we-really-have-to-use-github-codesp.md"
+            },
+            {
+              "id": "e80e8216d5",
+              "question": "Python: Python can't ingest data from the GitHub link provided using curl",
+              "sort_order": 86,
+              "content": "```python\nos.system(f\"curl -LO {url} -o {csv_name}\")\n```",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/086_e80e8216d5_python-python-cant-ingest-data-from-the-github-lin.md"
+            }
+          ],
+          "tool_call_id": "fc_bc30dd20-621e-4cab-959b-1dc6e01ccbe8",
+          "metadata": null,
+          "timestamp": "2025-10-02T17:00:57.710872+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "args": {
+            "id": "5b4fb0c0a8"
+          },
+          "tool_call_id": "pyd_ai_ccc2211a6ddd42e081fee83fdab2994f",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 0,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 0,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:00:59.323259+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": null,
+      "provider_response_id": null,
+      "finish_reason": "error"
+    },
+    {
+      "parts": [
+        {
+          "content": [
+            {
+              "type": "missing",
+              "loc": [
+                "query"
+              ],
+              "msg": "Field required",
+              "input": {
+                "id": "5b4fb0c0a8"
+              }
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "id"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "5b4fb0c0a8"
+            }
+          ],
+          "tool_name": "text_search",
+          "tool_call_id": "pyd_ai_ccc2211a6ddd42e081fee83fdab2994f",
+          "timestamp": "2025-10-02T17:00:59.323631+00:00",
+          "part_kind": "retry-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "We need to pass query string. Let's search with a query.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"GitHub Codespaces pre-installed tools Docker Python\"}",
+          "tool_call_id": "fc_8e997c2d-4623-4357-b0a9-ddf2cb62fd6b",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1719,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 42,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:01:12+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-56ef3312-ae7f-422c-964a-167e3db4d881",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "id": "5b4fb0c0a8",
+              "question": "Environment - Is GitHub codespaces an alternative to using cli/git bash to ingest the data and create a docker file?",
+              "sort_order": 23,
+              "content": "GitHub Codespaces offers you computing Linux resources with many pre-installed tools (Docker, Docker Compose, Python).\n\nYou can also open any GitHub repository in a GitHub Codespace.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/023_5b4fb0c0a8_environment-is-github-codespaces-an-alternative-to.md"
+            },
+            {
+              "id": "994ef10e79",
+              "question": "GitHub Codespaces: How to store secrets",
+              "sort_order": 8,
+              "content": "Instruction on how to store secrets that will be available in GitHub Codespaces. See [Managing your account-specific secrets for GitHub Codespaces - GitHub Docs](https://docs.github.com/en/codespaces/managing-your-codespaces/managing-your-account-specific-secrets-for-github-codespaces#about-secrets-for-github-codespaces).",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/008_994ef10e79_github-codespaces-how-to-store-secrets.md"
+            },
+            {
+              "id": "070766ca79",
+              "question": "Environment: Do we really have to use GitHub codespaces? I already have PostgreSQL & Docker installed.",
+              "sort_order": 24,
+              "content": "It's up to you which platform and environment you use for the course.\n\nGitHub Codespaces or GCP VM are just possible options, but you can do the entire course from your laptop.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/general/024_070766ca79_environment-do-we-really-have-to-use-github-codesp.md"
+            },
+            {
+              "id": "3d24f7796d",
+              "question": "GitHub Codespaces: Running pgadmin in Docker",
+              "sort_order": 9,
+              "content": "With the default instructions, running pgadmin in Docker may result in a blank screen after logging into the pgadmin console. To resolve this, add the following two environment variables to your pgadmin configuration to allow it to work with Codespaces\u2019 reverse proxy:\n\n```plaintext\nPGADMIN_CONFIG_PROXY_X_HOST_COUNT: 1\nPGADMIN_CONFIG_PROXY_X_PREFIX_COUNT: 1\n```",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/009_3d24f7796d_github-codespaces-running-pgadmin-in-docker.md"
+            },
+            {
+              "id": "b2eabcd7dc",
+              "question": "Docker: Setting up Docker on Mac",
+              "sort_order": 20,
+              "content": "For setting up Docker on macOS, you have two main options:\n\n1. **Download from Docker Website:**\n   - Visit the official Docker website and download the Docker Desktop for Mac as a `.dmg` file. This method is generally reliable and avoids issues related to licensing changes.\n\n2. **Using Homebrew:**\n   - Be aware that there can be conflicts when installing with Homebrew, especially between Docker Desktop and command-line tools. To avoid issues:\n     \n     - Install Docker Desktop first.\n     - Then install the command line tools.\n\n   - Commands:\n     \n     ```bash\n     brew install --cask docker\n     ```\n     \n     ```bash\n     brew install docker docker-compose\n     ```\n\n   - For more detailed issues related to `brew install`, refer to this [Issue](https://github.com/Homebrew/brew/issues/16309). \n\nFor more details, you can check the article on [Setting up Docker in macOS](https://medium.com/@vivekslair/setting-up-docker-in-macos-ee36d37b3be2).",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/020_b2eabcd7dc_docker-setting-up-docker-on-mac.md"
+            }
+          ],
+          "tool_call_id": "fc_8e997c2d-4623-4357-b0a9-ddf2cb62fd6b",
+          "metadata": null,
+          "timestamp": "2025-10-02T17:01:12.063141+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "We have the relevant answer: question 023_5b4fb0c0a8 says \"GitHub Codespaces offers you computing Linux resources with many pre-installed tools (Docker, Docker Compose, Python).\" So we can answer. We need to cite that. Also possibly other info: environment docs. The user asks: \"How do I launch a GitHub Codespace for my data engineering project, and what pre-installed tools (like Docker, Python, etc.) are available in that environment?\" So explain launching process and list pre-installed tools. Provide references. Use the file path. So answer referencing the file: \"Environment - Is GitHub codespaces an alternative to using cli/git bash to ingest the data and create a docker file?\" Provide link. Also maybe other references: \"GitHub Codespaces: How to store secrets\" but not necessary. We'll cite the one. Provide steps: go to repository on GitHub, click Codespaces > New Codespace, choose branch. Or via command line: gh codespace create. Then pre-installed: Docker, Docker Compose, Python, Node, etc. Provide list. Mention that codespaces runs on Linux, preinstalled tools include Docker, Docker Compose, Python 3.10+, Node, VS Code extensions, etc. Provide a link to docs maybe but referencing repository. We'll give the answer.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "content": "**Launching a GitHub Codespace**\n\n1. **Open your repository on GitHub**  \n   - Navigate to the repo that contains your data\u2011engineering project.  \n\n2. **Start a new Codespace**  \n   - Click the **Codespaces** button (the \u201c+\u201d icon) near the top right of the repo page.  \n   - Choose **New codespace**.  \n   - Pick the branch you want to work on (or create a new one).  \n   - GitHub will provision a fresh Linux VM and open the project in the web\u2011based VS\u202fCode editor.  \n\n   *Alternatively, you can use the CLI:*  \n   ```bash\n   gh codespace create --repo user/repo --branch main\n   ```  \n   (requires the GitHub CLI and that you have Codespaces permissions.)\n\n3. **Connect to the Codespace**  \n   - Once the provisioning finishes, you\u2019ll see the Codespace running in a new browser tab (or you can connect via the VS\u202fCode desktop app).  \n   - The terminal inside Codespace is already authenticated to your GitHub account and has network access to the rest of the world.\n\n**Pre\u2011installed tools in a Codespace**\n\nGitHub Codespaces is built on top of a lightweight Linux container that comes with a curated set of data\u2011science / engineering utilities. The most common ones you\u2019ll see are:\n\n| Tool | Typical version | What you can do |\n|------|-----------------|-----------------|\n| **Docker** | Latest stable (e.g., 20.x) | Run containers, build images, manage services. |\n| **Docker Compose** | Latest stable | Compose multi\u2011container Docker apps. |\n| **Python** | 3.10+ (plus `pip` & `venv`) | Run scripts, install packages, create virtual environments. |\n| **Node.js** | 18+ | Run JavaScript/TypeScript tooling, npm/yarn. |\n| **Git** | 2.x | Clone, fetch, push, etc. |\n| **VS\u202fCode extensions** | Pre\u2011installed set | Python, Docker, GitLens, Jupyter, etc. |\n| **Jupyter Notebook & JupyterLab** | 3.x | Interactive notebooks. |\n| **tmux, htop, curl, wget** | Standard Linux tools | Terminal multiplexing, system monitoring, HTTP utilities. |\n| **bash / zsh** | Standard | Shell scripting. |\n| **PostgreSQL client (`psql`)** | Included via Docker | Connect to Postgres containers or remote DBs. |\n| **R, RStudio Server** | Optional (via extensions) | For R\u2011based workflows. |\n\n> **Source**  \n> \u201cEnvironment \u2013 Is GitHub codespaces an alternative to using cli/git bash to ingest the data and create a docker file?\u201d \u2013 *faq-main/_questions/data\u2011engineering\u2011zoomcamp/general/023_5b4fb0c0a8_environment-is-github-codespaces-an-alternative-to.md*  \n> [Environment](https://github.com/DataTalksClub/faq/blob/main/faq-main/_questions/data-engineering-zoomcamp/general/023_5b4fb0c0a8_environment-is-github-codespaces-an-alternative-to.md)\n\nThese tools are ready to use out of the box, so you can jump straight into building your ETL pipelines, spinning up Docker\u2011based services, or prototyping Python scripts without any additional setup. If you need a specific language version or a tool not shipped by default, you can install it in your Codespace just like you would on any Linux machine.",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2579,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 1034,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:01:32+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-db0d6a28-0aa2-4b3f-8788-39333888e7db",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

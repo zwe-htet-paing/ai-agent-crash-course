@@ -1,0 +1,286 @@
+{
+  "agent_name": "faq_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "I keep seeing 'RESULTS:::0' when I run JsonConsumer.java, and I get a SaslAuthenticationException with JsonProducer.java\u2014what steps should I take to correctly set up the bootstrap server and cluster credentials?",
+          "timestamp": "2025-10-02T17:00:54.839688+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "The user asks: \"I keep seeing 'RESULTS:::0' when I run JsonConsumer.java, and I get a SaslAuthenticationException with JsonProducer.java\u2014what steps should I take to correctly set up the bootstrap server and cluster credentials?\"\n\nWe need to find relevant information from the course materials. Use search. Let's search for \"JsonConsumer.java RESULTS:::0\"",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"JsonConsumer.java RESULTS:::0\"}",
+          "tool_call_id": "fc_d37ff9d6-fc60-4368-a30b-7aacfbcb9eef",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 334,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 104,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:00:55+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-e09433b6-bb97-493f-a5a8-1e59af508f55",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "id": "cd8a62fc55",
+              "question": "Java Kafka: When running the producer/consumer/etc java scripts, no results retrieved or no message sent",
+              "sort_order": 24,
+              "content": "For example, when running `JsonConsumer.java`, you might see:\n\n```\nConsuming form kafka started\n\nRESULTS:::0\n\nRESULTS:::0\n\nRESULTS:::0\n```\n\nOr when running `JsonProducer.java`, you might encounter:\n\n```\nException in thread \"main\" java.util.concurrent.ExecutionException: org.apache.kafka.common.errors.SaslAuthenticationException: Authentication failed\n```\n\n**Solution:**\n\n1. Ensure the `StreamsConfig.BOOTSTRAP_SERVERS_CONFIG` in the scripts located at `src/main/java/org/example/` (e.g., `JsonConsumer.java`, `JsonProducer.java`) is pointing to the correct server URL (e.g., `europe-west3` vs `europe-west2`).\n\n2. Verify that the cluster key and secrets are updated in `src/main/java/org/example/Secrets.java` (`KAFKA_CLUSTER_KEY` and `KAFKA_CLUSTER_SECRET`).",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-6/024_cd8a62fc55_java-kafka-when-running-the-producerconsumeretc-ja.md"
+            },
+            {
+              "id": "72d6369d8a",
+              "question": "Installing Java 11 on codespaces",
+              "sort_order": 51,
+              "content": "1. Use the command below to check for available Java SDK versions:\n   \n   ```bash\n   sdk list java\n   ```\n\n2. Install the desired version, for example:\n   \n   ```bash\n   sdk install java 11.0.22-amzn\n   ```\n\n3. If prompted, press 'Y' to change the default Java version.\n\n4. Verify the installation by checking the Java version:\n   \n   ```bash\n   java -version\n   ```\n   \n5. If the version does not work correctly, set the default version with:\n   \n   ```bash\n   sdk default java 11.0.22-amzn\n   ```\n   \n   Adjust this command to match the version you have installed.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-5/051_72d6369d8a_installing-java-11-on-codespaces.md"
+            },
+            {
+              "id": "11fc890b73",
+              "question": "Java: java.lang.NoSuchMethodError: sun.nio.ch.DirectBuffer.cleaner()Lsun/misc/Cleaner Error during repartition call (conda pyspark installation)",
+              "sort_order": 21,
+              "content": "```java\njava.lang.NoSuchMethodError: sun.nio.ch.DirectBuffer.cleaner()Lsun/misc/Cleaner;\n```\n\n**Solution:** Replace Java Developer Kit 11 with Java Developer Kit 8.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-5/021_11fc890b73_java-javalangnosuchmethoderror-sunniochdirectbuffe.md"
+            },
+            {
+              "id": "5ca6890c1a",
+              "question": "Java Kafka: How to run producer/consumer/kstreams/etc in terminal",
+              "sort_order": 23,
+              "content": "In the project directory, run:\n\n```bash\njava -cp build/libs/<jar_name>-1.0-SNAPSHOT.jar:out src/main/java/org/example/JsonProducer.java\n```",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-6/023_5ca6890c1a_java-kafka-how-to-run-producerconsumerkstreamsetc.md"
+            },
+            {
+              "id": "78c8446eae",
+              "question": "Java - RuntimeError: Java gateway process exited before sending its port number",
+              "sort_order": 22,
+              "content": "This error indicates that the `JAVA_HOME` environment variable is not set correctly in the notebook log.\n\nFor more information, you can refer to the following resource:\n\n[PySpark Exception - Java gateway process exited before sending the driver its port number](https://sparkbyexamples.com/pyspark/pyspark-exception-java-gateway-process-exited-before-sending-the-driver-its-port-number/)",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-5/022_78c8446eae_java-runtimeerror-java-gateway-process-exited-befo.md"
+            }
+          ],
+          "tool_call_id": "fc_d37ff9d6-fc60-4368-a30b-7aacfbcb9eef",
+          "metadata": null,
+          "timestamp": "2025-10-02T17:00:55.386661+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "args": {
+            "id": "cd8a62fc55"
+          },
+          "tool_call_id": "pyd_ai_591da2646a5848c58b20b3e0d897417d",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 0,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 0,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:00:55.909175+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": null,
+      "provider_response_id": null,
+      "finish_reason": "error"
+    },
+    {
+      "parts": [
+        {
+          "content": [
+            {
+              "type": "missing",
+              "loc": [
+                "query"
+              ],
+              "msg": "Field required",
+              "input": {
+                "id": "cd8a62fc55"
+              }
+            },
+            {
+              "type": "extra_forbidden",
+              "loc": [
+                "id"
+              ],
+              "msg": "Extra inputs are not permitted",
+              "input": "cd8a62fc55"
+            }
+          ],
+          "tool_name": "text_search",
+          "tool_call_id": "pyd_ai_591da2646a5848c58b20b3e0d897417d",
+          "timestamp": "2025-10-02T17:00:55.909482+00:00",
+          "part_kind": "retry-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "We need to perform a text search with query. The correct query was provided earlier. Let's search for \"RESULTS:::0\" again.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"RESULTS:::0 JsonConsumer\"}",
+          "tool_call_id": "fc_c8cec1c6-fc4f-48ee-a15a-ea1d1612c931",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1432,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 54,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:00:56+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-3aa2b4eb-eab6-42d6-af06-90fbbf1b7b83",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "id": "cd8a62fc55",
+              "question": "Java Kafka: When running the producer/consumer/etc java scripts, no results retrieved or no message sent",
+              "sort_order": 24,
+              "content": "For example, when running `JsonConsumer.java`, you might see:\n\n```\nConsuming form kafka started\n\nRESULTS:::0\n\nRESULTS:::0\n\nRESULTS:::0\n```\n\nOr when running `JsonProducer.java`, you might encounter:\n\n```\nException in thread \"main\" java.util.concurrent.ExecutionException: org.apache.kafka.common.errors.SaslAuthenticationException: Authentication failed\n```\n\n**Solution:**\n\n1. Ensure the `StreamsConfig.BOOTSTRAP_SERVERS_CONFIG` in the scripts located at `src/main/java/org/example/` (e.g., `JsonConsumer.java`, `JsonProducer.java`) is pointing to the correct server URL (e.g., `europe-west3` vs `europe-west2`).\n\n2. Verify that the cluster key and secrets are updated in `src/main/java/org/example/Secrets.java` (`KAFKA_CLUSTER_KEY` and `KAFKA_CLUSTER_SECRET`).",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-6/024_cd8a62fc55_java-kafka-when-running-the-producerconsumeretc-ja.md"
+            },
+            {
+              "id": "c717810bc6",
+              "question": "Kestra: Backfill showing getting executed but not getting results or showing up in executions",
+              "sort_order": 1,
+              "content": "It seems to be a bug. The current fix is to remove the timezone from triggers in the script. More on this bug is [here](https://github.com/kestra-io/kestra/issues/7227).",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-3/001_c717810bc6_kestra-backfill-showing-getting-executed-but-not-g.md"
+            },
+            {
+              "id": "cd5d3e8423",
+              "question": "hadoop \u201cwc -l\u201d is giving a different result than shown in the video",
+              "sort_order": 42,
+              "content": "If you are using `wc -l fhvhv_tripdata_2021-01.csv.gz` with the gzip file as the file argument, you will get a different result, obviously, since the file is compressed.\n\nUnzip the file and then use:\n\n```bash\nwc -l fhvhv_tripdata_2021-01.csv\n```\n\nto get the right results.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-5/042_cd5d3e8423_hadoop-wc-l-is-giving-a-different-result-than-show.md"
+            },
+            {
+              "id": "3124f13c7c",
+              "question": "pgAdmin - Unable to connect to server: [Errno -3] Try again",
+              "sort_order": 82,
+              "content": "This error occurs when connecting pgAdmin with Docker Postgres. In the tutorial, the pgAdmin server creation under **Connection > Host name/address** uses `pg-database` and results in the above-mentioned error when saved.\n\n### Solution 1:\n\n- Verify that both containers are connected to `pg-network`:\n  \n  ```bash\n  docker network inspect pg-network\n  ```\n\n- If the Docker Postgres container is not connected, connect it to `pg-network`:\n\n  ```bash\n  docker network connect pg-network postgresContainer_name\n  ```\n  \n- Retry the connection. If the error persists, instead of using `pg-database` under **Connection > Host name/address**, try using the IP Address:\n\n  - Use the IP address of the `postgresContainer_name` container (e.g., `172.19.0.3`) in the pgAdmin configuration instead of the container name or `pg-database`.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/082_3124f13c7c_pgadmin-unable-to-connect-to-server-errno-3-try-ag.md"
+            }
+          ],
+          "tool_call_id": "fc_c8cec1c6-fc4f-48ee-a15a-ea1d1612c931",
+          "metadata": null,
+          "timestamp": "2025-10-02T17:00:56.332554+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "The user asks: \"I keep seeing 'RESULTS:::0' when I run JsonConsumer.java, and I get a SaslAuthenticationException with JsonProducer.java\u2014what steps should I take to correctly set up the bootstrap server and cluster credentials?\" We found relevant FAQ entry with ID cd8a62fc55. We should answer using that content. Provide steps: update BOOTSTRAP_SERVERS_CONFIG to correct URL, update Secrets.java for cluster key and secret. Also reference the file path. Provide link: https://github.com/DataTalksClub/faq/blob/main/faq-main/_questions/data-engineering-zoomcamp/module-6/024_cd8a62fc55_java-kafka-when-running-the-producerconsumeretc-ja.md. Cite.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "content": "The two symptoms you\u2019re seeing are both caused by an incorrect Kafka connection configuration.\n\n| Symptom | Likely Cause | Fix |\n|---------|--------------|-----|\n| `JsonConsumer.java` prints `RESULTS:::0` repeatedly | Consumer is connecting to the wrong broker (or no broker). | \u2022 Open `src/main/java/org/example/JsonConsumer.java` (and `JsonProducer.java`).<br>\u2022 Verify that `StreamsConfig.BOOTSTRAP_SERVERS_CONFIG` points to the **correct** broker URL (e.g., `europe-west3` if that\u2019s where your cluster lives). |\n| `JsonProducer.java` throws `SaslAuthenticationException: Authentication failed` | The SASL credentials (key/secret) used by the producer don\u2019t match the cluster\u2019s credentials. | \u2022 Open `src/main/java/org/example/Secrets.java`.<br>\u2022 Update `KAFKA_CLUSTER_KEY` and `KAFKA_CLUSTER_SECRET` with the values from the Kafka console (or from the cluster\u2019s settings in Google Cloud / Confluent Cloud, etc.). |\n\n**Quick checklist**\n\n1. **Bootstrap server**  \n   ```java\n   props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,\n             \"your-cluster-region-your-cluster-id.svc.cluster.local:9092\");\n   ```\n   (Make sure you\u2019re using the region that the cluster is actually deployed in \u2013 `europe-west3` vs `europe-west2` can change the endpoint.)\n\n2. **SASL credentials**  \n   ```java\n   props.put(\"sasl.jaas.config\",\n             \"org.apache.kafka.common.security.plain.PlainLoginModule required username=\\\"\" + KAFKA_CLUSTER_KEY + \"\\\" password=\\\"\" + KAFKA_CLUSTER_SECRET + \"\\\";\");\n   props.put(\"security.protocol\", \"SASL_SSL\");\n   props.put(\"sasl.mechanism\", \"PLAIN\");\n   ```\n\n3. **Re\u2011build and run**  \n   ```bash\n   ./gradlew clean build\n   java -cp build/libs/<your-jar>.jar:out src/main/java/org/example/JsonProducer.java\n   java -cp build/libs/<your-jar>.jar:out src/main/java/org/example/JsonConsumer.java\n   ```\n\nOnce the bootstrap URL and credentials match the cluster\u2019s actual settings, the consumer will start pulling messages (`RESULTS:::` will show the real count) and the producer will send data without the SASL error.\n\n*Reference:*  \n[Java Kafka: When running the producer/consumer/etc java scripts, no results retrieved or no message sent](https://github.com/DataTalksClub/faq/blob/main/faq-main/_questions/data-engineering-zoomcamp/module-6/024_cd8a62fc55_java-kafka-when-running-the-producerconsumeretc-ja.md)",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2313,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 746,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:00:57+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-8fbeeb25-3081-4e3e-aaca-a1d7ada950c7",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

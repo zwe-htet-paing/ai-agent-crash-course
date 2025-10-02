@@ -1,0 +1,146 @@
+{
+  "agent_name": "faq_agent_v2",
+  "system_prompt": [
+    "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance."
+  ],
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "tools": [
+    "text_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "I\u2019m behind a network restriction that blocks Google, and my Terraform runs fail. How can I configure my VPN or proxy settings so that the terminal program respects the system proxy?",
+          "timestamp": "2025-10-02T17:02:49.609880+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "We need to answer about configuring terminal program (likely Terraform) to respect system proxy. The user says: \"I'm behind a network restriction that blocks Google, and my Terraform runs fail. How can I configure my VPN or proxy settings so that the terminal program respects the system proxy?\" So likely we need to search the course materials. Let's search.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "tool_name": "text_search",
+          "args": "{\"query\":\"Terraform behind network restriction blocks Google configure VPN or proxy settings terminal program respects system proxy\"}",
+          "tool_call_id": "fc_5193fdcb-5392-44aa-aa6a-7a066a15b66a",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 324,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 108,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:02:59+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-f87e0332-1370-41fc-8020-9995c1427cef",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "text_search",
+          "content": [
+            {
+              "id": "31053272e0",
+              "question": "Terraform: Error: Post \"[storage.googleapis.com](https://storage.googleapis.com/storage/v1/b?alt=json&prettyPrint=false&project=coherent-ascent-379901): oauth2: cannot fetch token: Post \"[oauth2.googleapis.com](https://oauth2.googleapis.com/token): dial tcp 172.217.163.42:443: i/o timeout",
+              "sort_order": 115,
+              "content": "The issue was related to network restrictions, as Google is not accessible in my country. I used a VPN and discovered that the terminal program does not automatically follow the system proxy, requiring separate proxy configuration settings.\n\n**Solution:**\n\n1. Open an Enhanced Mode in your VPN application, such as Clash.\n2. Run `terraform apply` again.\n\nIf you encounter this issue, consult your VPN provider for assistance with configuration.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/115_31053272e0_terraform-error-post-storagegoogleapiscomhttpsstor.md"
+            },
+            {
+              "id": "79e44b9c07",
+              "question": "Docker: Docker network name",
+              "sort_order": 29,
+              "content": "Get the network name via:\n\n```bash\ndocker network ls\n```\n\nFor more details, refer to the [Docker network ls documentation](https://docs.docker.com/engine/reference/commandline/network_ls/).",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/029_79e44b9c07_docker-docker-network-name.md"
+            },
+            {
+              "id": "dec5edee6a",
+              "question": "Terraform - Error: Failed to query available provider packages \u2502 Could not retrieve the list of available versions for provider hashicorp/google: could not query \u2502 provider registry for registry.terrafogorm.io/hashicorp/google: the request failed after 2 attempts, \u2502 please try again later",
+              "sort_order": 114,
+              "content": "This error typically occurs due to internet connectivity issues. Terraform is unable to access the online registry.\n\n**Solution:**\n\n- Check your VPN/Firewall settings.\n- Clear cookies or restart your network.\n- Run `terraform init` again after addressing the connection issues.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/114_dec5edee6a_terraform-error-failed-to-query-available-provider.md"
+            },
+            {
+              "id": "a5a163f51d",
+              "question": "Terraform: Install for WSL",
+              "sort_order": 116,
+              "content": "You can configure Terraform on Windows 10 using the Linux Subsystem (WSL) by following this guide: [Configuring Terraform on Windows 10 Linux Subsystem](https://techcommunity.microsoft.com/t5/azure-developer-community-blog/configuring-terraform-on-windows-10-linux-sub-system/ba-p/393845).",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/116_a5a163f51d_terraform-install-for-wsl.md"
+            },
+            {
+              "id": "76f95c1d28",
+              "question": "Terraform: Terraform initialized in an empty directory! The directory has no Terraform configuration files. You may begin working with Terraform immediately by creating Terraform configuration files.",
+              "sort_order": 122,
+              "content": "This error occurs when `terraform init` is run outside the working directory.\n\nTo resolve this issue:\n\n1. Navigate to the working directory that contains your Terraform configuration files.\n2. Run the `terraform init` command inside the correct directory.\n\nMake sure your configuration files (e.g., .tf files) are present in the directory before running the command.",
+              "filename": "faq-main/_questions/data-engineering-zoomcamp/module-1/122_76f95c1d28_terraform-terraform-initialized-in-an-empty-direct.md"
+            }
+          ],
+          "tool_call_id": "fc_5193fdcb-5392-44aa-aa6a-7a066a15b66a",
+          "metadata": null,
+          "timestamp": "2025-10-02T17:02:59.341579+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant for a course.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.  \nWhen citing the reference, replace \"faq-main\" by the full path to the GitHub repository: \"https://github.com/DataTalksClub/faq/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "We have a relevant answer. Provide guidance citing it. Also general guidance.",
+          "id": null,
+          "signature": null,
+          "provider_name": null,
+          "part_kind": "thinking"
+        },
+        {
+          "content": "The issue you\u2019re seeing is a classic case of a VPN or proxy that blocks outbound traffic to Google (or the Terraform registry). Terraform\u2019s CLI does **not** automatically pick up the system\u2011wide proxy settings, so you have to configure it explicitly in the terminal session.\n\n**Quick fix (from the FAQ)**  \nOpen your VPN in \u201cEnhanced Mode\u201d (for example, **Clash**), then re\u2011run the command:\n\n```bash\nterraform apply\n```\n\nThe VPN\u2019s enhanced mode forwards DNS and HTTP(S) traffic correctly, letting Terraform reach `storage.googleapis.com` and the provider registry.\n\n> *Source:* [Terraform: Error: Post \u201cstorage.googleapis.com\u201d\u2026](https://github.com/DataTalksClub/faq/blob/main/_questions/data-engineering-zoomcamp/module-1/115_31053272e0_terraform-error-post-storagegoogleapiscomhttpsstor.md)\n\n---\n\n### If you\u2019re on a system proxy instead of a VPN\n\nTerraform respects the following environment variables, which you can set in your shell profile (`~/.bashrc`, `~/.zshrc`, etc.):\n\n| Variable | Purpose |\n|----------|---------|\n| `HTTP_PROXY` | For plain HTTP |\n| `HTTPS_PROXY` | For HTTPS |\n| `NO_PROXY` | Comma\u2011separated list of hosts that bypass the proxy |\n\nExample for a corporate proxy:\n\n```bash\nexport HTTP_PROXY=\"http://proxy.company.com:8080\"\nexport HTTPS_PROXY=\"http://proxy.company.com:8080\"\nexport NO_PROXY=\"localhost,127.0.0.1,.company.com\"\n```\n\nAfter adding these, reload your shell (`source ~/.bashrc`) and try `terraform init` / `apply` again.\n\n---\n\n### Common pitfalls\n\n| Problem | Fix |\n|---------|-----|\n| **Terraform still can\u2019t reach the registry** | Verify that the proxy actually allows outbound traffic to `*.googleapis.com` and `registry.terraform.io`. |\n| **You\u2019re behind a restrictive firewall** | Ask your IT team to whitelist those domains or provide a dedicated VPN profile that routes only the required traffic. |\n| **Proxy requires authentication** | Use `HTTP_PROXY=\"http://user:pass@proxy.company.com:8080\"` (be careful with credentials in shell history). |\n\n---\n\n### When all else fails\n\n1. **Check network connectivity**  \n   ```bash\n   curl -I https://registry.terraform.io\n   ```\n2. **Run Terraform with verbose logging**  \n   ```bash\n   TF_LOG=debug terraform init\n   ```\n   Inspect the logs for DNS or connection errors.\n\nIf you still hit the same timeout, it\u2019s likely a deeper network restriction. In that case, consult your network or VPN vendor for a configuration that allows Terraform\u2019s traffic to flow (e.g., enabling \u201csplit\u2011tunneling\u201d or a dedicated VPN profile).\n\nGood luck, and let me know if you hit any specific error messages!",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 1154,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 631,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {}
+      },
+      "model_name": "openai/gpt-oss-20b",
+      "timestamp": "2025-10-02T17:03:08+00:00",
+      "kind": "response",
+      "provider_name": "groq",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-09c290e4-f920-4fa2-a578-6f37e0b5d388",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

@@ -1,0 +1,143 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "How can I use an ExternalToolset to handle deferred tool calls and feed the results back into a Pydantic\u2011AI agent?",
+          "timestamp": "2025-10-03T18:09:20.035605+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"ExternalToolset deferred tool calls Pydantic-AI\",\"num_results\":5}",
+          "tool_call_id": "call_NYsOKOdF6Xq51TWzti9v8bZ0",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 238,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 30,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:20+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeVU2fB1xlPFGkopgyQXZzaZ7oeT",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 0,
+              "content": "# Deferred Tools\n\nThere are a few scenarios where the model should be able to call a tool that should not or cannot be executed during the same agent run inside the same Python process:\n\n- it may need to be approved by the user first\n- it may depend on an upstream service, frontend, or user to provide the result\n- the result could take longer to generate than it's reasonable to keep the agent process running\n\nTo support these use cases, Pydantic AI provides the concept of deferred tools, which come in two flavors documented below:\n\n- tools that [require approval](#human-in-the-loop-tool-approval)\n- tools that are [executed externally](#external-tool-execution)\n\nWhen the model calls a deferred tool, the agent run will end with a [`DeferredToolRequests`][pydantic_ai.output.DeferredToolRequests] output object containing information about the deferred tool calls. Once the approvals and/or results are ready, a new agent run can then be started with the original run's [message history](message-history.md) plus a [`DeferredToolResults`][pydantic_ai.tools.DeferredToolResults] object holding results for each tool call in `DeferredToolRequests`, which will continue the original run where it left off.\n\nNote that handling deferred tool calls requires `DeferredToolRequests` to be in the `Agent`'s [`output_type`](output.md#structured-output) so that the possible types of the agent run output are correctly inferred. If your agent can also be used in a context where no deferred tools are available and you don't want to deal with that type everywhere you use the agent, you can instead pass the `output_type` argument when you run the agent using [`agent.run()`][pydantic_ai.agent.AbstractAgent.run], [`agent.run_sync()`][pydantic_ai.agent.AbstractAgent.run_sync], [`agent.run_stream()`][pydantic_ai.agent.AbstractAgent.run_stream], or [`agent.iter()`][pydantic_ai.Agent.iter]. Note that the run-time `output_type` overrides the one specified at construction time (for type inference reasons",
+              "filename": "docs/deferred-tools.md",
+              "final_rrf_score": 0.031544957774465976,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 1000,
+              "content": "ge-history.md) plus a [`DeferredToolResults`][pydantic_ai.tools.DeferredToolResults] object holding results for each tool call in `DeferredToolRequests`, which will continue the original run where it left off.\n\nNote that handling deferred tool calls requires `DeferredToolRequests` to be in the `Agent`'s [`output_type`](output.md#structured-output) so that the possible types of the agent run output are correctly inferred. If your agent can also be used in a context where no deferred tools are available and you don't want to deal with that type everywhere you use the agent, you can instead pass the `output_type` argument when you run the agent using [`agent.run()`][pydantic_ai.agent.AbstractAgent.run], [`agent.run_sync()`][pydantic_ai.agent.AbstractAgent.run_sync], [`agent.run_stream()`][pydantic_ai.agent.AbstractAgent.run_stream], or [`agent.iter()`][pydantic_ai.Agent.iter]. Note that the run-time `output_type` overrides the one specified at construction time (for type inference reasons), so you'll need to include the original output type explicitly.\n\n## Human-in-the-Loop Tool Approval\n\nIf a tool function always requires approval, you can pass the `requires_approval=True` argument to the [`@agent.tool`][pydantic_ai.Agent.tool] decorator, [`@agent.tool_plain`][pydantic_ai.Agent.tool_plain] decorator, [`Tool`][pydantic_ai.tools.Tool] class, [`FunctionToolset.tool`][pydantic_ai.toolsets.FunctionToolset.tool] decorator, or [`FunctionToolset.add_function()`][pydantic_ai.toolsets.FunctionToolset.add_function] method. Inside the function, you can then assume that the tool call has been approved.\n\nIf whether a tool function requires approval depends on the tool call arguments or the agent [run context][pydantic_ai.tools.RunContext] (e.g. [dependencies](dependencies.md) or message history), you can raise the [`ApprovalRequired`][pydantic_ai.exceptions.ApprovalRequired] exception from the tool function. The [`RunContext.tool_call_approved`][pydantic_ai.tools.RunContext.tool_ca",
+              "filename": "docs/deferred-tools.md",
+              "final_rrf_score": 0.03149801587301587,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 8000,
+              "content": "    ]\n    ),\n    ModelResponse(\n        parts=[\n            TextPart(\n                content='I successfully updated `README.md` and cleared `.env`, but was not able to delete `__init__.py`.'\n            )\n        ],\n        usage=RequestUsage(input_tokens=79, output_tokens=39),\n        model_name='gpt-5',\n        timestamp=datetime.datetime(...),\n    ),\n]\n\"\"\"\n```\n\n_(This example is complete, it can be run \"as is\")_\n\n## External Tool Execution\n\nWhen the result of a tool call cannot be generated inside the same agent run in which it was called, the tool is considered to be external.\nExamples of external tools are client-side tools implemented by a web or app frontend, and slow tasks that are passed off to a background worker or external service instead of keeping the agent process running.\n\nIf whether a tool call should be executed externally depends on the tool call arguments, the agent [run context][pydantic_ai.tools.RunContext] (e.g. [dependencies](dependencies.md) or message history), or how long the task is expected to take, you can define a tool function and conditionally raise the [`CallDeferred`][pydantic_ai.exceptions.CallDeferred] exception. Before raising the exception, the tool function would typically schedule some background task and pass along the [`RunContext.tool_call_id`][pydantic_ai.tools.RunContext.tool_call_id] so that the result can be matched to the deferred tool call later.\n\nIf a tool is always executed externally and its definition is provided to your code along with a JSON schema for its arguments, you can use an [`ExternalToolset`](toolsets.md#external-toolset). If the external tools are known up front and you don't have the arguments JSON schema handy, you can also define a tool function with the appropriate signature that does nothing but raise the [`CallDeferred`][pydantic_ai.exceptions.CallDeferred] exception.\n\nWhen the model calls an external tool, the agent run will end with a [`DeferredToolRequests`][pydantic_ai.output.DeferredToolR",
+              "filename": "docs/deferred-tools.md",
+              "final_rrf_score": 0.029910714285714284,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 10000,
+              "content": "equests] output object with a `calls` list holding [`ToolCallPart`s][pydantic_ai.messages.ToolCallPart] containing the tool name, validated arguments, and a unique tool call ID.\n\nOnce the tool call results are ready, you can build a [`DeferredToolResults`][pydantic_ai.tools.DeferredToolResults] object with a `calls` dictionary that maps each tool call ID to an arbitrary value to be returned to the model, a [`ToolReturn`](tools-advanced.md#advanced-tool-returns) object, or a [`ModelRetry`][pydantic_ai.exceptions.ModelRetry] exception in case the tool call failed and the model should [try again](tools-advanced.md#tool-retries). This `DeferredToolResults` object can then be provided to one of the agent run methods as `deferred_tool_results`, alongside the original run's [message history](message-history.md).\n\nHere's an example that shows how to move a task that takes a while to complete to the background and return the result to the model once the task is complete:\n\n```python {title=\"external_tool.py\"}\nimport asyncio\nfrom dataclasses import dataclass\nfrom typing import Any\n\nfrom pydantic_ai import (\n    Agent,\n    CallDeferred,\n    DeferredToolRequests,\n    DeferredToolResults,\n    ModelRetry,\n    RunContext,\n)\n\n\n@dataclass\nclass TaskResult:\n    tool_call_id: str\n    result: Any\n\n\nasync def calculate_answer_task(tool_call_id: str, question: str) -> TaskResult:\n    await asyncio.sleep(1)\n    return TaskResult(tool_call_id=tool_call_id, result=42)\n\n\nagent = Agent('openai:gpt-5', output_type=[str, DeferredToolRequests])\n\ntasks: list[asyncio.Task[TaskResult]] = []\n\n\n@agent.tool\nasync def calculate_answer(ctx: RunContext, question: str) -> str:\n    assert ctx.tool_call_id is not None\n\n    task = asyncio.create_task(calculate_answer_task(ctx.tool_call_id, question))  # (1)!\n    tasks.append(task)\n\n    raise CallDeferred\n\n\nasync def main():\n    result = await agent.run('Calculate the answer to the ultimate question of life, the universe, and everything')\n    messages = result",
+              "filename": "docs/deferred-tools.md",
+              "final_rrf_score": 0.029631255487269532,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 17000,
+              "content": "t(\n            tool_name='temperature_fahrenheit',\n            args={'city': 'a'},\n            tool_call_id='pyd_ai_tool_call_id__temperature_fahrenheit',\n        ),\n    ],\n)\n\"\"\"\n\nresult = agent.run_sync(\n    message_history=messages,\n    deferred_tool_results=DeferredToolResults(\n        approvals={\n            'pyd_ai_tool_call_id__temperature_celsius': True,\n            'pyd_ai_tool_call_id__temperature_fahrenheit': False,\n        }\n    )\n)\nprint(result.output)\n#> {\"temperature_celsius\":21.0,\"temperature_fahrenheit\":\"The tool call was denied.\"}\n```\n\n1. We're using [`TestModel`][pydantic_ai.models.test.TestModel] here because it makes it easy to specify which tools to call.\n\n_(This example is complete, it can be run \"as is\")_\n\n### Changing Tool Execution\n\n[`WrapperToolset`][pydantic_ai.toolsets.WrapperToolset] wraps another toolset and delegates all responsibility to it.\n\nIt is is a no-op by default, but you can subclass `WrapperToolset` to change the wrapped toolset's tool execution behavior by overriding the [`call_tool()`][pydantic_ai.toolsets.AbstractToolset.call_tool] method.\n\n```python {title=\"logging_toolset.py\" requires=\"function_toolset.py,combined_toolset.py,renamed_toolset.py,prepared_toolset.py\"}\nimport asyncio\n\nfrom typing_extensions import Any\n\nfrom pydantic_ai import Agent, RunContext, ToolsetTool, WrapperToolset\nfrom pydantic_ai.models.test import TestModel\n\nfrom prepared_toolset import prepared_toolset\n\nLOG = []\n\nclass LoggingToolset(WrapperToolset):\n    async def call_tool(self, name: str, tool_args: dict[str, Any], ctx: RunContext, tool: ToolsetTool) -> Any:\n        LOG.append(f'Calling tool {name!r} with args: {tool_args!r}')\n        try:\n            await asyncio.sleep(0.1 * len(LOG)) # (1)!\n\n            result = await super().call_tool(name, tool_args, ctx, tool)\n            LOG.append(f'Finished calling tool {name!r} with result: {result!r}')\n        except Exception as e:\n            LOG.append(f'Error calling tool {name!r}: {e}')\n         ",
+              "filename": "docs/toolsets.md",
+              "score": 0.6883101463317871,
+              "search_type": "hybrid",
+              "final_rrf_score": 0.01639344262295082
+            }
+          ],
+          "tool_call_id": "call_NYsOKOdF6Xq51TWzti9v8bZ0",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:09:21.649507+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "To use an `ExternalToolset` for handling deferred tool calls and feeding results back into a Pydantic-AI agent, you can follow these steps:\n\n1. **Define External Tools**: Create an external tool that will define what actions to take if the task cannot be completed during the same agent run. This can be achieved by raising the `CallDeferred` exception when certain conditions are met, such as needing longer processing time or waiting for user approval.\n\n2. **Handling Deferred Requests**: When an external tool is called and cannot execute immediately, the agent run will yield a `DeferredToolRequests` object, which contains information about the tool calls. This includes tool names, their arguments, and unique identifiers for each tool call.\n\n3. **Execute the Tasks Externally**: Implement the logic to execute the external task (e.g., using a background worker or an upstream service) that corresponds to the deferred tool call. Make sure to keep track of which tool call corresponds to which operation.\n\n4. **Feed Results Back into the Agent**: Once the external tasks are completed, wrap the responses in a `DeferredToolResults` object. You will use this object along with the original message history when you start a new agent run to continue from where it left off.\n\n5. **Example Code**:\n   Here is a simplified example:\n   ```python\n   async def calculate_answer(ctx: RunContext, question: str) -> str:\n       # This function may allow deferring if answer is not available immediately\n       raise CallDeferred  # Indicate that this call needs to be deferred\n\n   # When ready to process results:\n   result = await agent.run('Your initial message here', deferred_tool_results=your_results)\n   ```\n\n6. **Running the Agent**: Make sure to pass the required parameters to your agent's run method, including the `deferred_tool_results`.\n\nBy utilizing the `ExternalToolset` pattern, your agent can efficiently manage delays and dependencies on external factors while providing coherent interactions. For further details and examples, check the documentation on [Deferred Tools](https://github.com/pydantic/pydantic-ai/blob/main/docs/deferred-tools.md).\n\nThis should guide you effectively in implementing the required functionalities in Pydantic-AI agents using deferred tool calls.",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2880,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 467,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:22+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeVWeBNG1VJiFQlMLhmtDikOytJU",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

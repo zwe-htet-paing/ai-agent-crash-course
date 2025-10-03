@@ -1,0 +1,143 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "Is it possible to stream structured responses from the model and display them live in a terminal UI (e.g. with Rich) using the StreamedResponse API?",
+          "timestamp": "2025-10-03T18:09:33.063817+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"stream structured responses StreamedResponse API terminal UI Rich\"}",
+          "tool_call_id": "call_zaTWNJB7lqlw4ZZZ6ZracmxD",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 243,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 24,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:34+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeViy4N0uOVpD8LTW63eLtgcWEEx",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 0,
+              "content": "This example shows how to stream markdown from an agent, using the [`rich`](https://github.com/Textualize/rich) library to highlight the output in the terminal.\n\nIt'll run the example with both OpenAI and Google Gemini models if the required environment variables are set.\n\nDemonstrates:\n\n* [streaming text responses](../output.md#streaming-text)\n\n## Running the Example\n\nWith [dependencies installed and environment variables set](./setup.md#usage), run:\n\n```bash\npython/uv-run -m pydantic_ai_examples.stream_markdown\n```\n\n## Example Code\n\n```snippet {path=\"/examples/pydantic_ai_examples/stream_markdown.py\"}```",
+              "filename": "docs/examples/stream-markdown.md",
+              "final_rrf_score": 0.03252247488101534,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 0,
+              "content": "Information about whales \u2014 an example of streamed structured response validation.\n\nDemonstrates:\n\n* [streaming structured output](../output.md#streaming-structured-output)\n\nThis script streams structured responses from GPT-4 about whales, validates the data\nand displays it as a dynamic table using [`rich`](https://github.com/Textualize/rich) as the data is received.\n\n## Running the Example\n\nWith [dependencies installed and environment variables set](./setup.md#usage), run:\n\n```bash\npython/uv-run -m pydantic_ai_examples.stream_whales\n```\n\nShould give an output like this:\n\n{{ video('53dd5e7664c20ae90ed90ae42f606bf3', 25) }}\n\n## Example Code\n\n```snippet {path=\"/examples/pydantic_ai_examples/stream_whales.py\"}```",
+              "filename": "docs/examples/stream-whales.md",
+              "final_rrf_score": 0.03252247488101534,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 4000,
+              "content": "tream = run_ag_ui(agent, run_input, accept=accept)\n\n    return StreamingResponse(event_stream, media_type=accept)\n```\n\nSince `app` is an ASGI application, it can be used with any ASGI server:\n\n```shell\nuvicorn run_ag_ui:app\n```\n\nThis will expose the agent as an AG-UI server, and your frontend can start sending requests to it.\n\n### Handle a Starlette request\n\nThis example uses [`handle_ag_ui_request()`][pydantic_ai.ag_ui.run_ag_ui] to directly handle a FastAPI request and return a response. Something analogous to this will work with any Starlette-based web framework.\n\n```py {title=\"handle_ag_ui_request.py\"}\nfrom fastapi import FastAPI\nfrom starlette.requests import Request\nfrom starlette.responses import Response\n\nfrom pydantic_ai import Agent\nfrom pydantic_ai.ag_ui import handle_ag_ui_request\n\nagent = Agent('openai:gpt-4.1', instructions='Be fun!')\n\napp = FastAPI()\n\n@app.post('/')\nasync def run_agent(request: Request) -> Response:\n    return await handle_ag_ui_request(agent, request)\n```\n\nSince `app` is an ASGI application, it can be used with any ASGI server:\n\n```shell\nuvicorn handle_ag_ui_request:app\n```\n\nThis will expose the agent as an AG-UI server, and your frontend can start sending requests to it.\n\n### Stand-alone ASGI app\n\nThis example uses [`Agent.to_ag_ui()`][pydantic_ai.agent.AbstractAgent.to_ag_ui] to turn the agent into a stand-alone ASGI application:\n\n```py {title=\"agent_to_ag_ui.py\" hl_lines=\"4\"}\nfrom pydantic_ai import Agent\n\nagent = Agent('openai:gpt-4.1', instructions='Be fun!')\napp = agent.to_ag_ui()\n```\n\nSince `app` is an ASGI application, it can be used with any ASGI server:\n\n```shell\nuvicorn agent_to_ag_ui:app\n```\n\nThis will expose the agent as an AG-UI server, and your frontend can start sending requests to it.\n\n## Design\n\nThe Pydantic AI AG-UI integration supports all features of the spec:\n\n- [Events](https://docs.ag-ui.com/concepts/events)\n- [Messages](https://docs.ag-ui.com/concepts/messages)\n- [State Management](https://docs.ag-ui.com/conc",
+              "filename": "docs/ag-ui.md",
+              "final_rrf_score": 0.02877846790890269,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 0,
+              "content": "# Agent User Interaction (AG-UI) Protocol\n\nThe [Agent User Interaction (AG-UI) Protocol](https://docs.ag-ui.com/introduction) is an open standard introduced by the\n[CopilotKit](https://webflow.copilotkit.ai/blog/introducing-ag-ui-the-protocol-where-agents-meet-users)\nteam that standardises how frontend applications communicate with AI agents, with support for streaming, frontend tools, shared state, and custom events.\n\n!!! note\n    The AG-UI integration was originally built by the team at [Rocket Science](https://www.rocketscience.gg/) and contributed in collaboration with the Pydantic AI and CopilotKit teams. Thanks Rocket Science!\n\n## Installation\n\nThe only dependencies are:\n\n- [ag-ui-protocol](https://docs.ag-ui.com/introduction): to provide the AG-UI types and encoder.\n- [starlette](https://www.starlette.io): to handle [ASGI](https://asgi.readthedocs.io/en/latest/) requests from a framework like FastAPI.\n\nYou can install Pydantic AI with the `ag-ui` extra to ensure you have all the\nrequired AG-UI dependencies:\n\n```bash\npip/uv-add 'pydantic-ai-slim[ag-ui]'\n```\n\nTo run the examples you'll also need:\n\n- [uvicorn](https://www.uvicorn.org/) or another ASGI compatible server\n\n```bash\npip/uv-add uvicorn\n```\n\n## Usage\n\nThere are three ways to run a Pydantic AI agent based on AG-UI run input with streamed AG-UI events as output, from most to least flexible. If you're using a Starlette-based web framework like FastAPI, you'll typically want to use the second method.\n\n1. [`run_ag_ui()`][pydantic_ai.ag_ui.run_ag_ui] takes an agent and an AG-UI [`RunAgentInput`](https://docs.ag-ui.com/sdk/python/core/types#runagentinput) object, and returns a stream of AG-UI events encoded as strings. It also takes optional [`Agent.iter()`][pydantic_ai.Agent.iter] arguments including `deps`. Use this if you're using a web framework not based on Starlette (e.g. Django or Flask) or want to modify the input or output some way.\n2. [`handle_ag_ui_request()`][pydantic_ai.ag_ui.handle_ag_ui_request",
+              "filename": "docs/ag-ui.md",
+              "final_rrf_score": 0.015873015873015872,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 27000,
+              "content": "antic_ai.result.StreamedRunResult.stream_text] will error if the response is not text.\n\n_(This example is complete, it can be run \"as is\" \u2014 you'll need to add `asyncio.run(main())` to run `main`)_\n\n!!! warning \"Output message not included in `messages`\"\n    The final output message will **NOT** be added to result messages if you use `.stream_text(delta=True)`,\n    see [Messages and chat history](message-history.md) for more information.\n\n### Streaming Structured Output\n\nHere's an example of streaming a user profile as it's built:\n\n```python {title=\"streamed_user_profile.py\" line_length=\"120\"}\nfrom datetime import date\n\nfrom typing_extensions import NotRequired, TypedDict\n\nfrom pydantic_ai import Agent\n\n\nclass UserProfile(TypedDict):\n    name: str\n    dob: NotRequired[date]\n    bio: NotRequired[str]\n\n\nagent = Agent(\n    'openai:gpt-4o',\n    output_type=UserProfile,\n    system_prompt='Extract a user profile from the input',\n)\n\n\nasync def main():\n    user_input = 'My name is Ben, I was born on January 28th 1990, I like the chain the dog and the pyramid.'\n    async with agent.run_stream(user_input) as result:\n        async for profile in result.stream_output():\n            print(profile)\n            #> {'name': 'Ben'}\n            #> {'name': 'Ben'}\n            #> {'name': 'Ben', 'dob': date(1990, 1, 28), 'bio': 'Likes'}\n            #> {'name': 'Ben', 'dob': date(1990, 1, 28), 'bio': 'Likes the chain the '}\n            #> {'name': 'Ben', 'dob': date(1990, 1, 28), 'bio': 'Likes the chain the dog and the pyr'}\n            #> {'name': 'Ben', 'dob': date(1990, 1, 28), 'bio': 'Likes the chain the dog and the pyramid'}\n            #> {'name': 'Ben', 'dob': date(1990, 1, 28), 'bio': 'Likes the chain the dog and the pyramid'}\n```\n\n_(This example is complete, it can be run \"as is\" \u2014 you'll need to add `asyncio.run(main())` to run `main`)_\n\nAs setting an `output_type` uses the [Tool Output](#tool-output) mode by default, this will only work if the model supports streaming tool arg",
+              "filename": "docs/output.md",
+              "score": 0.4407256245613098,
+              "search_type": "hybrid",
+              "final_rrf_score": 0.015873015873015872
+            }
+          ],
+          "tool_call_id": "call_zaTWNJB7lqlw4ZZZ6ZracmxD",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:09:35.283825+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "Yes, it is indeed possible to stream structured responses from the model and display them live in a terminal UI using the StreamedResponse API. The response can be streamed in real time, allowing for dynamic updates in the UI. \n\nThe documentation provides an example where structured responses about whales are streamed and validated while displaying the data as a dynamic table using the [`rich`](https://github.com/Textualize/rich) library in Python. This demonstrates the integration of streaming structured outputs with a terminal UI effectively.\n\n### Example of Streaming Structured Output\nHere's a brief outline of how this can be set up:\n\n1. **Setup**: Ensure you have the necessary dependencies installed, including `rich` and `Pydantic AI`.\n2. **Code Example**: Below is a conceptual code snippet on how you might implement this:\n\n   ```python\n   from rich import print\n   from pydantic_ai import Agent\n\n   agent = Agent('openai:gpt-4.1', instructions='Provide structured information about whales.')\n\n   async def main():\n       async with agent.run_stream('Tell me about whales.') as result:\n           async for data in result.stream_output():\n               print(data)  # This can be formatted as needed using Rich\n\n   # Execute the main function\n   asyncio.run(main())\n   ```\n\n3. **Execution**: Run your application, and it would stream responses as they are generated, allowing you to visualize them in real time.\n\n### Running the Example\nYou can run the example by executing a command like this in your terminal:\n\n```bash\npython -m pydantic_ai_examples.stream_whales\n```\n\nThis will set up your agent and display the streamed structured responses live in the terminal using the `rich` library.\n\nFor more detailed instructions and to see the complete code example, refer to the source [here](https://github.com/pydantic/pydantic-ai/blob/main/docs/examples/stream-whales.md).",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2497,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 395,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:35+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeVjElZYdI2MyRuVMBuVo359G6kQ",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

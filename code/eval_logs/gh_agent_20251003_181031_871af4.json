@@ -1,0 +1,144 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "If a tool raises a ModelRetry, how can I ensure the agent automatically retries with a new prompt?",
+          "timestamp": "2025-10-03T18:10:28.884587+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"ModelRetry agent automatic retry prompt\"}",
+          "tool_call_id": "call_gFtmdtOck1iS4Xe2eQdviCpe",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 232,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 20,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:10:29+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeWbJ5SRaC3grfyXOUycz6lhSovV",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 0,
+              "content": "# `pydantic_ai.agent`\n\n::: pydantic_ai.agent\n    options:\n        members:\n            - Agent\n            - AbstractAgent\n            - WrapperAgent\n            - AgentRun\n            - AgentRunResult\n            - EndStrategy\n            - RunOutputDataT\n            - capture_run_messages\n            - InstrumentationSettings\n            - EventStreamHandler",
+              "filename": "docs/api/agent.md",
+              "final_rrf_score": 0.01639344262295082,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 42000,
+              "content": "dantic_ai.Agent.tool], or [outputs][pydantic_ai.Agent.__init__].\n- You can access the current retry count from within a tool or output function via [`ctx.retry`][pydantic_ai.tools.RunContext].\n\nHere's an example:\n\n```python {title=\"tool_retry.py\"}\nfrom pydantic import BaseModel\n\nfrom pydantic_ai import Agent, RunContext, ModelRetry\n\nfrom fake_database import DatabaseConn\n\n\nclass ChatResult(BaseModel):\n    user_id: int\n    message: str\n\n\nagent = Agent(\n    'openai:gpt-4o',\n    deps_type=DatabaseConn,\n    output_type=ChatResult,\n)\n\n\n@agent.tool(retries=2)\ndef get_user_by_name(ctx: RunContext[DatabaseConn], name: str) -> int:\n    \"\"\"Get a user's ID from their full name.\"\"\"\n    print(name)\n    #> John\n    #> John Doe\n    user_id = ctx.deps.users.get(name=name)\n    if user_id is None:\n        raise ModelRetry(\n            f'No user found with name {name!r}, remember to provide their full name'\n        )\n    return user_id\n\n\nresult = agent.run_sync(\n    'Send a message to John Doe asking for coffee next week', deps=DatabaseConn()\n)\nprint(result.output)\n\"\"\"\nuser_id=123 message='Hello John, would you be free for coffee sometime next week? Let me know what works for you!'\n\"\"\"\n```\n\n## Model errors\n\nIf models behave unexpectedly (e.g., the retry limit is exceeded, or their API returns `503`), agent runs will raise [`UnexpectedModelBehavior`][pydantic_ai.exceptions.UnexpectedModelBehavior].\n\nIn these cases, [`capture_run_messages`][pydantic_ai.capture_run_messages] can be used to access the messages exchanged during the run to help diagnose the issue.\n\n```python {title=\"agent_model_errors.py\"}\nfrom pydantic_ai import Agent, ModelRetry, UnexpectedModelBehavior, capture_run_messages\n\nagent = Agent('openai:gpt-4o')\n\n\n@agent.tool_plain\ndef calc_volume(size: int) -> int:  # (1)!\n    if size == 42:\n        return size**3\n    else:\n        raise ModelRetry('Please try again.')\n\n\nwith capture_run_messages() as messages:  # (2)!\n    try:\n        result = agent.run_sync('Please get me th",
+              "filename": "docs/agents.md",
+              "score": 0.5510483980178833,
+              "search_type": "hybrid",
+              "final_rrf_score": 0.01639344262295082
+            },
+            {
+              "start": 0,
+              "content": "# Multi-agent Applications\n\nThere are roughly four levels of complexity when building applications with Pydantic AI:\n\n1. Single agent workflows \u2014 what most of the `pydantic_ai` documentation covers\n2. [Agent delegation](#agent-delegation) \u2014 agents using another agent via tools\n3. [Programmatic agent hand-off](#programmatic-agent-hand-off) \u2014 one agent runs, then application code calls another agent\n4. [Graph based control flow](graph.md) \u2014 for the most complex cases, a graph-based state machine can be used to control the execution of multiple agents\n\nOf course, you can combine multiple strategies in a single application.\n\n## Agent delegation\n\n\"Agent delegation\" refers to the scenario where an agent delegates work to another agent, then takes back control when the delegate agent (the agent called from within a tool) finishes.\nIf you want to hand off control to another agent completely, without coming back to the first agent, you can use an [output function](output.md#output-functions).\n\nSince agents are stateless and designed to be global, you do not need to include the agent itself in agent [dependencies](dependencies.md).\n\nYou'll generally want to pass [`ctx.usage`][pydantic_ai.RunContext.usage] to the [`usage`][pydantic_ai.agent.AbstractAgent.run] keyword argument of the delegate agent run so usage within that run counts towards the total usage of the parent agent run.\n\n!!! note \"Multiple models\"\n    Agent delegation doesn't need to use the same model for each agent. If you choose to use different models within a run, calculating the monetary cost from the final [`result.usage()`][pydantic_ai.agent.AgentRunResult.usage] of the run will not be possible, but you can still use [`UsageLimits`][pydantic_ai.usage.UsageLimits] \u2014 including `request_limit`, `total_tokens_limit`, and `tool_calls_limit` \u2014 to avoid unexpected costs or runaway tool loops.\n\n```python {title=\"agent_delegation_simple.py\"}\nfrom pydantic_ai import Agent, RunContext, UsageLimits\n\njoke_selection_agent",
+              "filename": "docs/multi-agent-applications.md",
+              "final_rrf_score": 0.016129032258064516,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 29000,
+              "content": "t(e)\n    #> The next tool call would exceed the tool_calls_limit of 1 (tool_calls=1)\n```\n\n!!! note\n    - Usage limits are especially relevant if you've registered many tools. Use `request_limit` to bound the number of model turns, and `tool_calls_limit` to cap the number of successful tool executions within a run.\n    - These limits are enforced at the final stage before the LLM is called. If your limits are stricter than your retry settings, the usage limit will be reached before all retries are attempted.\n\n#### Model (Run) Settings\n\nPydantic AI offers a [`settings.ModelSettings`][pydantic_ai.settings.ModelSettings] structure to help you fine tune your requests.\nThis structure allows you to configure common parameters that influence the model's behavior, such as `temperature`, `max_tokens`,\n`timeout`, and more.\n\nThere are three ways to apply these settings, with a clear precedence order:\n\n1. **Model-level defaults** - Set when creating a model instance via the `settings` parameter. These serve as the base defaults for that model.\n2. **Agent-level defaults** - Set during [`Agent`][pydantic_ai.agent.Agent] initialization via the `model_settings` argument. These are merged with model defaults, with agent settings taking precedence.\n3. **Run-time overrides** - Passed to `run{_sync,_stream}` functions via the `model_settings` argument. These have the highest priority and are merged with the combined agent and model defaults.\n\nFor example, if you'd like to set the `temperature` setting to `0.0` to ensure less random behavior,\nyou can do the following:\n\n```py\nfrom pydantic_ai import Agent, ModelSettings\nfrom pydantic_ai.models.openai import OpenAIChatModel\n\n# 1. Model-level defaults\nmodel = OpenAIChatModel(\n    'gpt-4o',\n    settings=ModelSettings(temperature=0.8, max_tokens=500)  # Base defaults\n)\n\n# 2. Agent-level defaults (overrides model defaults by merging)\nagent = Agent(model, model_settings=ModelSettings(temperature=0.5))\n\n# 3. Run-time overrides (highest priority)",
+              "filename": "docs/agents.md",
+              "score": 0.5428444147109985,
+              "search_type": "hybrid",
+              "final_rrf_score": 0.016129032258064516
+            },
+            {
+              "start": 7000,
+              "content": "  joke_selection_agent --> joke_factory[\"joke_factory (tool)\"]\n  joke_factory --> joke_generation_agent\n  joke_generation_agent --> get_jokes[\"get_jokes (tool)\"]\n  get_jokes --> http_request[\"HTTP request\"]\n  http_request --> get_jokes\n  get_jokes --> joke_generation_agent\n  joke_generation_agent --> joke_factory\n  joke_factory --> joke_selection_agent\n  joke_selection_agent --> END\n```\n\n## Programmatic agent hand-off\n\n\"Programmatic agent hand-off\" refers to the scenario where multiple agents are called in succession, with application code and/or a human in the loop responsible for deciding which agent to call next.\n\nHere agents don't need to use the same deps.\n\nHere we show two agents used in succession, the first to find a flight and the second to extract the user's seat preference.\n\n```python {title=\"programmatic_handoff.py\"}\nfrom typing import Literal\n\nfrom pydantic import BaseModel, Field\nfrom rich.prompt import Prompt\n\nfrom pydantic_ai import Agent, ModelMessage, RunContext, RunUsage, UsageLimits\n\n\nclass FlightDetails(BaseModel):\n    flight_number: str\n\n\nclass Failed(BaseModel):\n    \"\"\"Unable to find a satisfactory choice.\"\"\"\n\n\nflight_search_agent = Agent[None, FlightDetails | Failed](  # (1)!\n    'openai:gpt-4o',\n    output_type=FlightDetails | Failed,  # type: ignore\n    system_prompt=(\n        'Use the \"flight_search\" tool to find a flight '\n        'from the given origin to the given destination.'\n    ),\n)\n\n\n@flight_search_agent.tool  # (2)!\nasync def flight_search(\n    ctx: RunContext[None], origin: str, destination: str\n) -> FlightDetails | None:\n    # in reality, this would call a flight search API or\n    # use a browser to scrape a flight search website\n    return FlightDetails(flight_number='AK456')\n\n\nusage_limits = UsageLimits(request_limit=15)  # (3)!\n\n\nasync def find_flight(usage: RunUsage) -> FlightDetails | None:  # (4)!\n    message_history: list[ModelMessage] | None = None\n    for _ in range(3):\n        prompt = Prompt.ask(\n            'Where wo",
+              "filename": "docs/multi-agent-applications.md",
+              "final_rrf_score": 0.015873015873015872,
+              "search_type": "hybrid"
+            }
+          ],
+          "tool_call_id": "call_gFtmdtOck1iS4Xe2eQdviCpe",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:10:30.314833+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "To ensure that an agent automatically retries with a new prompt after a `ModelRetry` is raised, you can utilize the `retries` parameter when defining your tool. This parameter specifies the number of times to retry if a `ModelRetry` exception occurs. Here's an overview of how to implement this:\n\n1. **Define Your Tool with Retries**: When creating your tool using the `@agent.tool` decorator, specify the `retries` argument to indicate how many attempts should be made in case of a retryable error.\n\n2. **Handle the `ModelRetry` Exception**: The tool can raise a `ModelRetry` exception, which will trigger the retry mechanism.\n\nHere is an example code snippet demonstrating this:\n\n```python\nfrom pydantic import BaseModel\nfrom pydantic_ai import Agent, RunContext, ModelRetry\n\nclass ChatResult(BaseModel):\n    user_id: int\n    message: str\n\nagent = Agent('openai:gpt-4o')\n\n@agent.tool(retries=2)  # Specify to retry 2 times on ModelRetry\ndef get_user_by_name(ctx: RunContext, name: str) -> int:\n    user_id = ctx.deps.users.get(name=name)\n    if user_id is None:\n        raise ModelRetry(f'No user found with name {name!r}, remember to provide their full name')\n    return user_id\n\nresult = agent.run_sync('Send a message to John Doe asking for coffee next week')\nprint(result.output)\n```\n\nIn this example, if the `get_user_by_name` function encounters a `ModelRetry` because no user is found, it will automatically attempt the operation up to 2 additional times before failing completely.\n\n### Important Notes:\n- Each retry will use the original input prompt unless you implement logic to modify the prompt based on previous attempts.\n- You can check the current retry count through `ctx.retry` within your tool.\n- Make sure that your logic aligns with how you want to handle retries, possibly adjusting the prompt dynamically if needed.\n\nFor further details, you can refer to the documentation on handling `ModelRetry` and defining agent tools: [Agent Documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/api/agent.md).",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2603,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 461,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:10:31+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeWdGrLmUgwP0FFAjwHofgrvOiDe",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

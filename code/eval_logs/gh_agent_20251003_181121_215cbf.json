@@ -1,0 +1,142 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "What\u2019s the correct way to use StateDeps with a custom Pydantic BaseModel to maintain per\u2011request state in an AG\u2011UI front\u2011end?",
+          "timestamp": "2025-10-03T18:11:19.050836+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"StateDeps Pydantic BaseModel AG-UI per-request state\",\"num_results\":5}",
+          "tool_call_id": "call_dtHdZGxbKVKoFaOGmIAJ10mc",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 243,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 32,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:11:19+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeXPn2q5707abfYkgtfn1gybkGSD",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 7000,
+              "content": "_ai.ag_ui.StateDeps] [dependencies type](./dependencies.md) that can be used to automatically\nvalidate state contained in [`RunAgentInput.state`](https://docs.ag-ui.com/sdk/js/core/types#runagentinput) using a Pydantic `BaseModel` specified as a generic parameter.\n\n!!! note \"Custom dependencies type with AG-UI state\"\n    If you want to use your own dependencies type to hold AG-UI state as well as other things, it needs to implements the\n    [`StateHandler`][pydantic_ai.ag_ui.StateHandler] protocol, meaning it needs to be a [dataclass](https://docs.python.org/3/library/dataclasses.html) with a non-optional `state` field. This lets Pydantic AI ensure that state is properly isolated between requests by building a new dependencies object each time.\n\n    If the `state` field's type is a Pydantic `BaseModel` subclass, the raw state dictionary on the request is automatically validated. If not, you can validate the raw value yourself in your dependencies dataclass's `__post_init__` method.\n\n\n```python {title=\"ag_ui_state.py\"}\nfrom pydantic import BaseModel\n\nfrom pydantic_ai import Agent\nfrom pydantic_ai.ag_ui import StateDeps\n\n\nclass DocumentState(BaseModel):\n    \"\"\"State for the document being written.\"\"\"\n\n    document: str = ''\n\n\nagent = Agent(\n    'openai:gpt-4.1',\n    instructions='Be fun!',\n    deps_type=StateDeps[DocumentState],\n)\napp = agent.to_ag_ui(deps=StateDeps(DocumentState()))\n```\n\nSince `app` is an ASGI application, it can be used with any ASGI server:\n\n```bash\nuvicorn ag_ui_state:app --host 0.0.0.0 --port 9000\n```\n\n### Tools\n\nAG-UI frontend tools are seamlessly provided to the Pydantic AI agent, enabling rich\nuser experiences with frontend user interfaces.\n\n### Events\n\nPydantic AI tools can send [AG-UI events](https://docs.ag-ui.com/concepts/events) simply by returning a\n[`ToolReturn`](tools-advanced.md#advanced-tool-returns) object with a\n[`BaseEvent`](https://docs.ag-ui.com/sdk/python/core/events#baseevent) (or a list of events) as `metadata`,\nwhich allows ",
+              "filename": "docs/ag-ui.md",
+              "final_rrf_score": 0.03252247488101534,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 6000,
+              "content": "epts/state)\n- [Tools](https://docs.ag-ui.com/concepts/tools)\n\nThe integration receives messages in the form of a\n[`RunAgentInput`](https://docs.ag-ui.com/sdk/python/core/types#runagentinput) object\nthat describes the details of the requested agent run including message history, state, and available tools.\n\nThese are converted to Pydantic AI types and passed to the agent's run method. Events from the agent, including tool calls, are converted to AG-UI events and streamed back to the caller as Server-Sent Events (SSE).\n\nA user request may require multiple round trips between client UI and Pydantic AI\nserver, depending on the tools and events needed.\n\n## Features\n\n### State management\n\nThe integration provides full support for\n[AG-UI state management](https://docs.ag-ui.com/concepts/state), which enables\nreal-time synchronization between agents and frontend applications.\n\nIn the example below we have document state which is shared between the UI and\nserver using the [`StateDeps`][pydantic_ai.ag_ui.StateDeps] [dependencies type](./dependencies.md) that can be used to automatically\nvalidate state contained in [`RunAgentInput.state`](https://docs.ag-ui.com/sdk/js/core/types#runagentinput) using a Pydantic `BaseModel` specified as a generic parameter.\n\n!!! note \"Custom dependencies type with AG-UI state\"\n    If you want to use your own dependencies type to hold AG-UI state as well as other things, it needs to implements the\n    [`StateHandler`][pydantic_ai.ag_ui.StateHandler] protocol, meaning it needs to be a [dataclass](https://docs.python.org/3/library/dataclasses.html) with a non-optional `state` field. This lets Pydantic AI ensure that state is properly isolated between requests by building a new dependencies object each time.\n\n    If the `state` field's type is a Pydantic `BaseModel` subclass, the raw state dictionary on the request is automatically validated. If not, you can validate the raw value yourself in your dependencies dataclass's `__post_init__` method.\n\n\n`",
+              "filename": "docs/ag-ui.md",
+              "final_rrf_score": 0.03252247488101534,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 8000,
+              "content": "``python {title=\"ag_ui_state.py\"}\nfrom pydantic import BaseModel\n\nfrom pydantic_ai import Agent\nfrom pydantic_ai.ag_ui import StateDeps\n\n\nclass DocumentState(BaseModel):\n    \"\"\"State for the document being written.\"\"\"\n\n    document: str = ''\n\n\nagent = Agent(\n    'openai:gpt-4.1',\n    instructions='Be fun!',\n    deps_type=StateDeps[DocumentState],\n)\napp = agent.to_ag_ui(deps=StateDeps(DocumentState()))\n```\n\nSince `app` is an ASGI application, it can be used with any ASGI server:\n\n```bash\nuvicorn ag_ui_state:app --host 0.0.0.0 --port 9000\n```\n\n### Tools\n\nAG-UI frontend tools are seamlessly provided to the Pydantic AI agent, enabling rich\nuser experiences with frontend user interfaces.\n\n### Events\n\nPydantic AI tools can send [AG-UI events](https://docs.ag-ui.com/concepts/events) simply by returning a\n[`ToolReturn`](tools-advanced.md#advanced-tool-returns) object with a\n[`BaseEvent`](https://docs.ag-ui.com/sdk/python/core/events#baseevent) (or a list of events) as `metadata`,\nwhich allows for custom events and state updates.\n\n```python {title=\"ag_ui_tool_events.py\"}\nfrom ag_ui.core import CustomEvent, EventType, StateSnapshotEvent\nfrom pydantic import BaseModel\n\nfrom pydantic_ai import Agent, RunContext, ToolReturn\nfrom pydantic_ai.ag_ui import StateDeps\n\n\nclass DocumentState(BaseModel):\n    \"\"\"State for the document being written.\"\"\"\n\n    document: str = ''\n\n\nagent = Agent(\n    'openai:gpt-4.1',\n    instructions='Be fun!',\n    deps_type=StateDeps[DocumentState],\n)\napp = agent.to_ag_ui(deps=StateDeps(DocumentState()))\n\n\n@agent.tool\nasync def update_state(ctx: RunContext[StateDeps[DocumentState]]) -> ToolReturn:\n    return ToolReturn(\n        return_value='State updated',\n        metadata=[\n            StateSnapshotEvent(\n                type=EventType.STATE_SNAPSHOT,\n                snapshot=ctx.deps.state,\n            ),\n        ],\n    )\n\n\n@agent.tool_plain\nasync def custom_events() -> ToolReturn:\n    return ToolReturn(\n        return_value='Count events sent',\n       ",
+              "filename": "docs/ag-ui.md",
+              "final_rrf_score": 0.031746031746031744,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 1000,
+              "content": "\nrequired AG-UI dependencies:\n\n```bash\npip/uv-add 'pydantic-ai-slim[ag-ui]'\n```\n\nTo run the examples you'll also need:\n\n- [uvicorn](https://www.uvicorn.org/) or another ASGI compatible server\n\n```bash\npip/uv-add uvicorn\n```\n\n## Usage\n\nThere are three ways to run a Pydantic AI agent based on AG-UI run input with streamed AG-UI events as output, from most to least flexible. If you're using a Starlette-based web framework like FastAPI, you'll typically want to use the second method.\n\n1. [`run_ag_ui()`][pydantic_ai.ag_ui.run_ag_ui] takes an agent and an AG-UI [`RunAgentInput`](https://docs.ag-ui.com/sdk/python/core/types#runagentinput) object, and returns a stream of AG-UI events encoded as strings. It also takes optional [`Agent.iter()`][pydantic_ai.Agent.iter] arguments including `deps`. Use this if you're using a web framework not based on Starlette (e.g. Django or Flask) or want to modify the input or output some way.\n2. [`handle_ag_ui_request()`][pydantic_ai.ag_ui.handle_ag_ui_request] takes an agent and a Starlette request (e.g. from FastAPI) coming from an AG-UI frontend, and returns a streaming Starlette response of AG-UI events that you can return directly from your endpoint. It also takes optional [`Agent.iter()`][pydantic_ai.Agent.iter] arguments including `deps`, that you can vary for each request (e.g. based on the authenticated user).\n3. [`Agent.to_ag_ui()`][pydantic_ai.agent.AbstractAgent.to_ag_ui] returns an ASGI application that handles every AG-UI request by running the agent. It also takes optional [`Agent.iter()`][pydantic_ai.Agent.iter] arguments including `deps`, but these will be the same for each request, with the exception of the AG-UI state that's injected as described under [state management](#state-management). This ASGI app can be [mounted](https://fastapi.tiangolo.com/advanced/sub-applications/) at a given path in an existing FastAPI app.\n\n### Handle run input and output directly\n\nThis example uses [`run_ag_ui()`][pydantic_ai.ag_ui.run_ag_u",
+              "filename": "docs/ag-ui.md",
+              "final_rrf_score": 0.029857397504456328,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 2000,
+              "content": "] takes an agent and a Starlette request (e.g. from FastAPI) coming from an AG-UI frontend, and returns a streaming Starlette response of AG-UI events that you can return directly from your endpoint. It also takes optional [`Agent.iter()`][pydantic_ai.Agent.iter] arguments including `deps`, that you can vary for each request (e.g. based on the authenticated user).\n3. [`Agent.to_ag_ui()`][pydantic_ai.agent.AbstractAgent.to_ag_ui] returns an ASGI application that handles every AG-UI request by running the agent. It also takes optional [`Agent.iter()`][pydantic_ai.Agent.iter] arguments including `deps`, but these will be the same for each request, with the exception of the AG-UI state that's injected as described under [state management](#state-management). This ASGI app can be [mounted](https://fastapi.tiangolo.com/advanced/sub-applications/) at a given path in an existing FastAPI app.\n\n### Handle run input and output directly\n\nThis example uses [`run_ag_ui()`][pydantic_ai.ag_ui.run_ag_ui] and performs its own request parsing and response generation.\nThis can be modified to work with any web framework.\n\n```py {title=\"run_ag_ui.py\"}\nimport json\nfrom http import HTTPStatus\n\nfrom ag_ui.core import RunAgentInput\nfrom fastapi import FastAPI\nfrom fastapi.requests import Request\nfrom fastapi.responses import Response, StreamingResponse\nfrom pydantic import ValidationError\n\nfrom pydantic_ai import Agent\nfrom pydantic_ai.ag_ui import SSE_CONTENT_TYPE, run_ag_ui\n\nagent = Agent('openai:gpt-4.1', instructions='Be fun!')\n\napp = FastAPI()\n\n\n@app.post('/')\nasync def run_agent(request: Request) -> Response:\n    accept = request.headers.get('accept', SSE_CONTENT_TYPE)\n    try:\n        run_input = RunAgentInput.model_validate(await request.json())\n    except ValidationError as e:  # pragma: no cover\n        return Response(\n            content=json.dumps(e.json()),\n            media_type='application/json',\n            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,\n        )\n\n    event_s",
+              "filename": "docs/ag-ui.md",
+              "final_rrf_score": 0.02964426877470356,
+              "search_type": "hybrid"
+            }
+          ],
+          "tool_call_id": "call_dtHdZGxbKVKoFaOGmIAJ10mc",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:11:20.466249+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "To use `StateDeps` with a custom Pydantic `BaseModel` to maintain per-request state in an AG-UI front-end, you need to follow these steps:\n\n1. **Create a Pydantic BaseModel**: Define a subclass of `BaseModel` which will hold the state you wish to manage for each request. \n\n2. **Define Your Agent**: Set up your AG-UI agent with the `StateDeps` dependency type, specifying your custom `BaseModel`.\n\n3. **Create an ASGI Application**: Convert your agent to an ASGI application that can handle requests. This can be done using `agent.to_ag_ui()`.\n\nHere's a complete example based on the documentation:\n\n```python\nfrom pydantic import BaseModel\nfrom pydantic_ai import Agent\nfrom pydantic_ai.ag_ui import StateDeps\n\nclass DocumentState(BaseModel):\n    \"\"\"State for the document being written.\"\"\"\n    document: str = ''\n\n# Create the agent with StateDeps for DocumentState\nagent = Agent(\n    'openai:gpt-4.1',\n    instructions='Be fun!',\n    deps_type=StateDeps[DocumentState],\n)\n\n# Create the ASGI application\napp = agent.to_ag_ui(deps=StateDeps(DocumentState()))\n```\n\n### Running Your Application\nYou can run this ASGI application using a server like `uvicorn`:\n\n```bash\nuvicorn ag_ui_state:app --host 0.0.0.0 --port 9000\n```\n\n### Important Notes:\n- Your custom dependencies type needs to implement the `StateHandler` protocol, which means it should be a dataclass with a non-optional `state` field. This ensures that the state is isolated between requests.\n- If the `state` field is of a Pydantic `BaseModel` type, the raw state dictionary in the request is automatically validated against it.\n\nFor further details on handling events and state updates, you might find it useful to refer to the AG-UI documentation: [AG-UI Documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/ag-ui.md).",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 3049,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 439,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:11:21+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeXRheGNXjJsPGqRuVvCrUe9wzGN",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

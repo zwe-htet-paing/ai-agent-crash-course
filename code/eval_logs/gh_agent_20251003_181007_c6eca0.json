@@ -1,0 +1,142 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "How do I configure retry logic for tools in Pydantic\u2011AI using the pydantic_ai.retries module?",
+          "timestamp": "2025-10-03T18:10:06.086261+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"configure retry logic pydantic-ai pydantic_ai.retries\",\"num_results\":5}",
+          "tool_call_id": "call_vmRu2kAeFsxUyNoh6OZxuJAL",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 235,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 32,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:10:06+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeWEymglUue9Kwq9N5rYAqVzq5m0",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 0,
+              "content": "# `pydantic_ai.retries`\n\n::: pydantic_ai.retries",
+              "filename": "docs/api/retries.md",
+              "final_rrf_score": 0.03278688524590164,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 0,
+              "content": "# HTTP Request Retries\n\nPydantic AI provides retry functionality for HTTP requests made by model providers through custom HTTP transports.\nThis is particularly useful for handling transient failures like rate limits, network timeouts, or temporary server errors.\n\n## Overview\n\nThe retry functionality is built on top of the [tenacity](https://github.com/jd/tenacity) library and integrates\nseamlessly with httpx clients. You can configure retry behavior for any provider that accepts a custom HTTP client.\n\n## Installation\n\nTo use the retry transports, you need to install `tenacity`, which you can do via the `retries` dependency group:\n\n```bash\npip/uv-add 'pydantic-ai-slim[retries]'\n```\n\n## Usage Example\n\nHere's an example of adding retry functionality with smart retry handling:\n\n```python {title=\"smart_retry_example.py\"}\nfrom httpx import AsyncClient, HTTPStatusError\nfrom tenacity import retry_if_exception_type, stop_after_attempt, wait_exponential\n\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.openai import OpenAIProvider\nfrom pydantic_ai.retries import AsyncTenacityTransport, RetryConfig, wait_retry_after\n\n\ndef create_retrying_client():\n    \"\"\"Create a client with smart retry handling for multiple error types.\"\"\"\n\n    def should_retry_status(response):\n        \"\"\"Raise exceptions for retryable HTTP status codes.\"\"\"\n        if response.status_code in (429, 502, 503, 504):\n            response.raise_for_status()  # This will raise HTTPStatusError\n\n    transport = AsyncTenacityTransport(\n        config=RetryConfig(\n            # Retry on HTTP errors and connection issues\n            retry=retry_if_exception_type((HTTPStatusError, ConnectionError)),\n            # Smart waiting: respects Retry-After headers, falls back to exponential backoff\n            wait=wait_retry_after(\n                fallback_strategy=wait_exponential(multiplier=1, max=60),\n                max_wait=300\n            ),\n            # Stop",
+              "filename": "docs/retries.md",
+              "final_rrf_score": 0.0315136476426799,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 1000,
+              "content": "ic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.openai import OpenAIProvider\nfrom pydantic_ai.retries import AsyncTenacityTransport, RetryConfig, wait_retry_after\n\n\ndef create_retrying_client():\n    \"\"\"Create a client with smart retry handling for multiple error types.\"\"\"\n\n    def should_retry_status(response):\n        \"\"\"Raise exceptions for retryable HTTP status codes.\"\"\"\n        if response.status_code in (429, 502, 503, 504):\n            response.raise_for_status()  # This will raise HTTPStatusError\n\n    transport = AsyncTenacityTransport(\n        config=RetryConfig(\n            # Retry on HTTP errors and connection issues\n            retry=retry_if_exception_type((HTTPStatusError, ConnectionError)),\n            # Smart waiting: respects Retry-After headers, falls back to exponential backoff\n            wait=wait_retry_after(\n                fallback_strategy=wait_exponential(multiplier=1, max=60),\n                max_wait=300\n            ),\n            # Stop after 5 attempts\n            stop=stop_after_attempt(5),\n            # Re-raise the last exception if all retries fail\n            reraise=True\n        ),\n        validate_response=should_retry_status\n    )\n    return AsyncClient(transport=transport)\n\n# Use the retrying client with a model\nclient = create_retrying_client()\nmodel = OpenAIChatModel('gpt-4o', provider=OpenAIProvider(http_client=client))\nagent = Agent(model)\n```\n\n## Wait Strategies\n\n### wait_retry_after\n\nThe `wait_retry_after` function is a smart wait strategy that automatically respects HTTP `Retry-After` headers:\n\n```python {title=\"wait_strategy_example.py\"}\nfrom tenacity import wait_exponential\n\nfrom pydantic_ai.retries import wait_retry_after\n\n# Basic usage - respects Retry-After headers, falls back to exponential backoff\nwait_strategy_1 = wait_retry_after()\n\n# Custom configuration\nwait_strategy_2 = wait_retry_after(\n    fallback_strategy=wait_exponential(multiplier=2, max=120),\n    max_wait=600  # Never wait more tha",
+              "filename": "docs/retries.md",
+              "final_rrf_score": 0.031024531024531024,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 7000,
+              "content": "_client()\n# Client will now retry on timeout, connection, and read errors\n```\n\n### Custom Retry Logic\n\n```python {title=\"custom_retry_logic.py\"}\nimport httpx\nfrom tenacity import stop_after_attempt, wait_exponential\n\nfrom pydantic_ai.retries import AsyncTenacityTransport, RetryConfig, wait_retry_after\n\n\ndef create_custom_retry_client():\n    \"\"\"Create a client with custom retry logic.\"\"\"\n    def custom_retry_condition(exception):\n        \"\"\"Custom logic to determine if we should retry.\"\"\"\n        if isinstance(exception, httpx.HTTPStatusError):\n            # Retry on server errors but not client errors\n            return 500 <= exception.response.status_code < 600\n        return isinstance(exception, httpx.TimeoutException | httpx.ConnectError)\n\n    transport = AsyncTenacityTransport(\n        config=RetryConfig(\n            retry=custom_retry_condition,\n            # Use wait_retry_after for smart waiting on rate limits,\n            # with custom exponential backoff as fallback\n            wait=wait_retry_after(\n                fallback_strategy=wait_exponential(multiplier=2, max=30),\n                max_wait=120\n            ),\n            stop=stop_after_attempt(5),\n            reraise=True\n        ),\n        validate_response=lambda r: r.raise_for_status()\n    )\n    return httpx.AsyncClient(transport=transport)\n\nclient = create_custom_retry_client()\n# Client will retry server errors (5xx) and network errors, but not client errors (4xx)\n```\n\n## Using with Different Providers\n\nThe retry transports work with any provider that accepts a custom HTTP client:\n\n### OpenAI\n\n```python {title=\"openai_with_retries.py\" requires=\"smart_retry_example.py\"}\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.openai import OpenAIProvider\n\nfrom smart_retry_example import create_retrying_client\n\nclient = create_retrying_client()\nmodel = OpenAIChatModel('gpt-4o', provider=OpenAIProvider(http_client=client))\nagent = Agent(model)",
+              "filename": "docs/retries.md",
+              "final_rrf_score": 0.030776515151515152,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 9000,
+              "content": "\n```\n\n### Anthropic\n\n```python {title=\"anthropic_with_retries.py\" requires=\"smart_retry_example.py\"}\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.anthropic import AnthropicModel\nfrom pydantic_ai.providers.anthropic import AnthropicProvider\n\nfrom smart_retry_example import create_retrying_client\n\nclient = create_retrying_client()\nmodel = AnthropicModel('claude-3-5-sonnet-20241022', provider=AnthropicProvider(http_client=client))\nagent = Agent(model)\n```\n\n### Any OpenAI-Compatible Provider\n\n```python {title=\"openai_compatible_with_retries.py\" requires=\"smart_retry_example.py\"}\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.openai import OpenAIProvider\n\nfrom smart_retry_example import create_retrying_client\n\nclient = create_retrying_client()\nmodel = OpenAIChatModel(\n    'your-model-name',  # Replace with actual model name\n    provider=OpenAIProvider(\n        base_url='https://api.example.com/v1',  # Replace with actual API URL\n        api_key='your-api-key',  # Replace with actual API key\n        http_client=client\n    )\n)\nagent = Agent(model)\n```\n\n## Best Practices\n\n1. **Start Conservative**: Begin with a small number of retries (3-5) and reasonable wait times.\n\n2. **Use Exponential Backoff**: This helps avoid overwhelming servers during outages.\n\n3. **Set Maximum Wait Times**: Prevent indefinite delays with reasonable maximum wait times.\n\n4. **Handle Rate Limits Properly**: Respect `Retry-After` headers when possible.\n\n5. **Log Retry Attempts**: Add logging to monitor retry behavior in production. (This will be picked up by Logfire automatically if you instrument httpx.)\n\n6. **Consider Circuit Breakers**: For high-traffic applications, consider implementing circuit breaker patterns.\n\n## Error Handling\n\nThe retry transports will re-raise the last exception if all retry attempts fail. Make sure to handle these appropriately in your application:\n\n```python {title=\"error_handling_example.py\" require",
+              "filename": "docs/retries.md",
+              "final_rrf_score": 0.0304147465437788,
+              "search_type": "hybrid"
+            }
+          ],
+          "tool_call_id": "call_vmRu2kAeFsxUyNoh6OZxuJAL",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:10:07.597989+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "To configure retry logic for tools in Pydantic-AI using the `pydantic_ai.retries` module, you can follow these steps:\n\n### 1. Install the Required Dependency\nEnsure you have the `tenacity` library installed, which is required for retry functionality. You can install it using the following command:\n```bash\npip install pydantic-ai-slim[retries]\n```\n\n### 2. Create a Client with Retry Logic\nYou can create an HTTP client with custom retry handling. Here is an example code snippet:\n\n```python\nfrom httpx import AsyncClient, HTTPStatusError\nfrom tenacity import retry_if_exception_type, stop_after_attempt, wait_exponential\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.openai import OpenAIProvider\nfrom pydantic_ai.retries import AsyncTenacityTransport, RetryConfig, wait_retry_after\n\ndef create_retrying_client():\n    \"\"\"Create a client with smart retry handling for multiple error types.\"\"\"\n\n    def should_retry_status(response):\n        \"\"\"Raise exceptions for retryable HTTP status codes.\"\"\"\n        if response.status_code in (429, 502, 503, 504):\n            response.raise_for_status()  # This will raise HTTPStatusError\n\n    transport = AsyncTenacityTransport(\n        config=RetryConfig(\n            retry=retry_if_exception_type((HTTPStatusError, ConnectionError)),\n            wait=wait_retry_after(\n                fallback_strategy=wait_exponential(multiplier=1, max=60),\n                max_wait=300\n            ),\n            stop=stop_after_attempt(5),\n            reraise=True\n        ),\n        validate_response=should_retry_status\n    )\n    return AsyncClient(transport=transport)\n\n# Use the retrying client with a model\nclient = create_retrying_client()\nmodel = OpenAIChatModel('gpt-4o', provider=OpenAIProvider(http_client=client))\nagent = Agent(model)\n```\n\n### 3. Explanation of Key Components\n- **Transport**: Use `AsyncTenacityTransport` to handle retries.\n- **Retry Config**: Configure retry conditions using `RetryConfig`:\n  - `retry`: Specify which exceptions to retry.\n  - `wait`: Define the waiting strategy, utilizing `wait_retry_after` for smart delays.\n  - `stop`: Set how many attempts to make before stopping.\n- **Custom Logic**: Define how to determine if a response should be retried (e.g., using HTTP status codes).\n\n### 4. Wait Strategies\nYou can use different strategies for waiting between retry attempts. The smart waiting strategy can automatically respect HTTP `Retry-After` headers using `wait_retry_after`.\n\n### 5. Using with Different Providers\nYou can integrate the retry client with different providers by passing the client to the provider.\n\nBy following these steps, you should be able to configure retry logic for HTTP requests in Pydantic-AI effectively. \n\nFor detailed documentation, you can refer to the [retries documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/retries.md).",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2415,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 645,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:10:07+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeWFjmpKH9d8eS8XrlmWT8PznO5U",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

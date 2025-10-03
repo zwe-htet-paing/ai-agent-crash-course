@@ -1,0 +1,144 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "How can I specify an output_type that includes several Pydantic models and a plain string, and what should I keep in mind for type\u2011checking?",
+          "timestamp": "2025-10-03T18:11:31.552954+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"output_type several Pydantic models plain string type-checking\",\"num_results\":5}",
+          "tool_call_id": "call_Wu2DELxeLSdDRsI5zbbCg06u",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 242,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 31,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:11:31+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeXbdCufTgy5pov1VqQA3UCEB9ER",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 0,
+              "content": "# Pydantic Model\n\nSimple example of using Pydantic AI to construct a Pydantic model from a text input.\n\nDemonstrates:\n\n- [structured `output_type`](../output.md#structured-output)\n\n## Running the Example\n\nWith [dependencies installed and environment variables set](./setup.md#usage), run:\n\n```bash\npython/uv-run -m pydantic_ai_examples.pydantic_model\n```\n\nThis examples uses `openai:gpt-4o` by default, but it works well with other models, e.g. you can run it\nwith Gemini using:\n\n```bash\nPYDANTIC_AI_MODEL=gemini-1.5-pro python/uv-run -m pydantic_ai_examples.pydantic_model\n```\n\n(or `PYDANTIC_AI_MODEL=gemini-1.5-flash ...`)\n\n## Example Code\n\n```snippet {path=\"/examples/pydantic_ai_examples/pydantic_model.py\"}```",
+              "filename": "docs/examples/pydantic-model.md",
+              "final_rrf_score": 0.01639344262295082,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 2000,
+              "content": "s, as well as type unions -- generally everything supported as type hints in a Pydantic model. You can also pass a list of multiple choices.\n\nBy default, Pydantic AI leverages the model's tool calling capability to make it return structured data. When multiple output types are specified (in a union or list), each member is registered with the model as a separate output tool in order to reduce the complexity of the schema and maximise the chances a model will respond correctly. This has been shown to work well across a wide range of models. If you'd like to change the names of the output tools, use a model's native structured output feature, or pass the output schema to the model in its [instructions](agents.md#instructions), you can use an [output mode](#output-modes) marker class.\n\nWhen no output type is specified, or when `str` is among the output types, any plain text response from the model will be used as the output data.\nIf `str` is not among the output types, the model is forced to return structured data or call an output function.\n\nIf the output type schema is not of type `\"object\"` (e.g. it's `int` or `list[int]`), the output type is wrapped in a single element object, so the schema of all tools registered with the model are object schemas.\n\nStructured outputs (like tools) use Pydantic to build the JSON schema used for the tool, and to validate the data returned by the model.\n\n!!! note \"Type checking considerations\"\n    The Agent class is generic in its output type, and this type is carried through to `AgentRunResult.output` and `StreamedRunResult.output` so that your IDE or static type checker can warn you when your code doesn't properly take into account all the possible values those outputs could have.\n\n    Static type checkers like pyright and mypy will do their best to infer the agent's output type from the `output_type` you've specified, but they're not always able to do so correctly when you provide functions or multiple types in a union or list, eve",
+              "filename": "docs/output.md",
+              "score": 0.6974743604660034,
+              "search_type": "hybrid",
+              "final_rrf_score": 0.01639344262295082
+            },
+            {
+              "start": 16000,
+              "content": "c_ai.providers.grok.GrokProvider]:\n\n```python\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.grok import GrokProvider\n\nmodel = OpenAIChatModel(\n    'grok-2-1212',\n    provider=GrokProvider(api_key='your-xai-api-key'),\n)\nagent = Agent(model)\n...\n```\n\n### MoonshotAI\n\nCreate an API key in the [Moonshot Console](https://platform.moonshot.ai/console).\nWith that key you can instantiate the [`MoonshotAIProvider`][pydantic_ai.providers.moonshotai.MoonshotAIProvider]:\n\n```python\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.moonshotai import MoonshotAIProvider\n\nmodel = OpenAIChatModel(\n    'kimi-k2-0711-preview',\n    provider=MoonshotAIProvider(api_key='your-moonshot-api-key'),\n)\nagent = Agent(model)\n...\n```\n\n### GitHub Models\n\nTo use [GitHub Models](https://docs.github.com/en/github-models), you'll need a GitHub personal access token with the `models: read` permission.\n\nOnce you have the token, you can use it with the [`GitHubProvider`][pydantic_ai.providers.github.GitHubProvider]:\n\n```python\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.github import GitHubProvider\n\nmodel = OpenAIChatModel(\n    'xai/grok-3-mini',  # GitHub Models uses prefixed model names\n    provider=GitHubProvider(api_key='your-github-token'),\n)\nagent = Agent(model)\n...\n```\n\nYou can also set the `GITHUB_API_KEY` environment variable:\n\n```bash\nexport GITHUB_API_KEY='your-github-token'\n```\n\nGitHub Models supports various model families with different prefixes. You can see the full list on the [GitHub Marketplace](https://github.com/marketplace?type=models) or the public [catalog endpoint](https://models.github.ai/catalog/models).\n\n### Perplexity\n\nFollow the Perplexity [getting started](https://docs.perplexity.ai/guides/getting-started)\nguide to create an API key. Then, you can query the Perplexity API with the follo",
+              "filename": "docs/models/openai.md",
+              "final_rrf_score": 0.016129032258064516,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 4000,
+              "content": "n though Pydantic AI will behave correctly. When this happens, your type checker will complain even when you're confident you've passed a valid `output_type`, and you'll need to help the type checker by explicitly specifying the generic parameters on the `Agent` constructor. This is shown in the second example below and the output functions example further down.\n\n    Specifically, there are three valid uses of `output_type` where you'll need to do this:\n\n    1. When using a union of types, e.g. `output_type=Foo | Bar`. Until [PEP-747](https://peps.python.org/pep-0747/) \"Annotating Type Forms\" lands in Python 3.15, type checkers do not consider these a valid value for `output_type`. In addition to the generic parameters on the `Agent` constructor, you'll need to add `# type: ignore` to the line that passes the union to `output_type`. Alternatively, you can use a list: `output_type=[Foo, Bar]`.\n    2. With mypy: When using a list, as a functionally equivalent alternative to a union, or because you're passing in [output functions](#output-functions). Pyright does handle this correctly, and we've filed [an issue](https://github.com/python/mypy/issues/19142) with mypy to try and get this fixed.\n    3. With mypy: when using an async output function. Pyright does handle this correctly, and we've filed [an issue](https://github.com/python/mypy/issues/19143) with mypy to try and get this fixed.\n\nHere's an example of returning either text or structured data:\n\n```python {title=\"box_or_error.py\"}\n\nfrom pydantic import BaseModel\n\nfrom pydantic_ai import Agent\n\n\nclass Box(BaseModel):\n    width: int\n    height: int\n    depth: int\n    units: str\n\n\nagent = Agent(\n    'openai:gpt-4o-mini',\n    output_type=[Box, str], # (1)!\n    system_prompt=(\n        \"Extract me the dimensions of a box, \"\n        \"if you can't extract all data, ask the user to try again.\"\n    ),\n)\n\nresult = agent.run_sync('The box is 10x20x30')\nprint(result.output)\n#> Please provide the units for the dimensions (e.g",
+              "filename": "docs/output.md",
+              "score": 0.6473979949951172,
+              "search_type": "hybrid",
+              "final_rrf_score": 0.016129032258064516
+            },
+            {
+              "start": 17000,
+              "content": "n.\n\nOnce you have the token, you can use it with the [`GitHubProvider`][pydantic_ai.providers.github.GitHubProvider]:\n\n```python\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.github import GitHubProvider\n\nmodel = OpenAIChatModel(\n    'xai/grok-3-mini',  # GitHub Models uses prefixed model names\n    provider=GitHubProvider(api_key='your-github-token'),\n)\nagent = Agent(model)\n...\n```\n\nYou can also set the `GITHUB_API_KEY` environment variable:\n\n```bash\nexport GITHUB_API_KEY='your-github-token'\n```\n\nGitHub Models supports various model families with different prefixes. You can see the full list on the [GitHub Marketplace](https://github.com/marketplace?type=models) or the public [catalog endpoint](https://models.github.ai/catalog/models).\n\n### Perplexity\n\nFollow the Perplexity [getting started](https://docs.perplexity.ai/guides/getting-started)\nguide to create an API key. Then, you can query the Perplexity API with the following:\n\n```python\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.openai import OpenAIProvider\n\nmodel = OpenAIChatModel(\n    'sonar-pro',\n    provider=OpenAIProvider(\n        base_url='https://api.perplexity.ai',\n        api_key='your-perplexity-api-key',\n    ),\n)\nagent = Agent(model)\n...\n```\n\n### Fireworks AI\n\nGo to [Fireworks.AI](https://fireworks.ai/) and create an API key in your account settings.\nOnce you have the API key, you can use it with the [`FireworksProvider`][pydantic_ai.providers.fireworks.FireworksProvider]:\n\n```python\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.openai import OpenAIChatModel\nfrom pydantic_ai.providers.fireworks import FireworksProvider\n\nmodel = OpenAIChatModel(\n    'accounts/fireworks/models/qwq-32b',  # model library available at https://fireworks.ai/models\n    provider=FireworksProvider(api_key='your-fireworks-api-key'),\n)\nagent = Agent(model)\n...\n```\n\n### Together AI\n\nGo to [Toge",
+              "filename": "docs/models/openai.md",
+              "final_rrf_score": 0.015873015873015872,
+              "search_type": "hybrid"
+            }
+          ],
+          "tool_call_id": "call_Wu2DELxeLSdDRsI5zbbCg06u",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:11:32.836811+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "To specify an `output_type` that includes multiple Pydantic models and a plain string, you can use a union or a list for defining the output types when initializing the `Agent`. Here's how you can do it:\n\n### Example Code\n```python\nfrom pydantic import BaseModel\nfrom pydantic_ai import Agent\n\nclass Box(BaseModel):\n    width: int\n    height: int\n    depth: int\n    units: str\n\n# Initialize an Agent with output_type including both a Pydantic model and a string\nagent = Agent(\n    'openai:gpt-4o-mini',  # Specify your model\n    output_type=[Box, str],  # Specify the Pydantic model and string type\n    system_prompt=(\n        \"Extract the dimensions of a box. \"\n        \"If unable to extract all data, ask the user to try again.\"\n    ),\n)\n\nresult = agent.run_sync('The box is 10x20x30')  # Example input\nprint(result.output)  # Outputs result based on the input\n```\n\n### Type-Checking Considerations\nWhen using unions or lists with the `output_type`, keep the following in mind:\n\n1. **Union Types**: If you use a union of types like `output_type=Foo | Bar`, type checkers may not recognize this correctly until Python 3.15 (PEP-747). For compatibility:\n   - Consider using a list instead: `output_type=[Foo, Bar]`.\n   - If using a union, you might have to add `# type: ignore` to suppress type checker warnings.\n\n2. **Static Type Checkers**: Tools like Pyright generally handle these situations better than mypy. If you're using mypy, check its compatibility with your setup. You might need to specify generic parameters on the `Agent` constructor explicitly for clarity.\n\n3. **Single Element Objects**: If your output type schema is not of type `object` (e.g., `int`, `list[int]`), it will be wrapped in a single-element object.\n\n4. **Consistency in Output Types**: Ensure that you have consistent handling of output types throughout your application, especially when multiple types are expected.\n\nTo summarize, specify your output types as shown, and be aware of the nuances involved with static type checking when dealing with unions and multiple types.\n\nFor more context, you can refer to the detailed documentation in the following sources:\n- [Output Documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/output.md)",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2801,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 525,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:11:33+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeXdKXNlC2gvNsWja9vJPlzpyqxH",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

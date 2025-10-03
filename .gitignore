@@ -12,3 +12,8 @@ wheels/
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# log files
+*.log
+
+logs/

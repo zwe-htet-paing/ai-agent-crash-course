@@ -1,0 +1,142 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "What breaking changes were introduced in v0.7.6 of pydantic\u2011ai and how do I migrate my existing code?",
+          "timestamp": "2025-10-03T18:09:44.438659+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"breaking changes v0.7.6 pydantic-ai migration\",\"num_results\":5}",
+          "tool_call_id": "call_ju3F8dg5X0ZWbe1fyNghKsgL",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 238,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 32,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:44+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeVso6UoSL9xUDjsRGCJjiuaGxe6",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 0,
+              "content": "# Upgrade Guide\n\nIn September 2025, Pydantic AI reached V1, which means we're committed to API stability: we will not introduce changes that break your code until V2 (if we do, you can shout at us as it's definitely a mistake).\nOnce we release V2, in April 2026 at the earliest, we'll continue to provide security fixes for V1 for another 6 months minimum, so you have time to upgrade your applications.\n\n## Breaking Changes\n\nHere's a filtered list of the breaking changes for each version to help you upgrade Pydantic AI.\n\n### v1.0.1 (2025-09-05)\n\nThe following breaking change was accidentally left out of v1.0.0:\n\n- See [#2808](https://github.com/pydantic/pydantic-ai/pull/2808) - Remove `Python` evaluator from `pydantic_evals` for security reasons\n\n### v1.0.0 (2025-09-04)\n\n- See [#2725](https://github.com/pydantic/pydantic-ai/pull/2725) - Drop support for Python 3.9\n- See [#2738](https://github.com/pydantic/pydantic-ai/pull/2738) - Make many dataclasses require keyword arguments\n- See [#2715](https://github.com/pydantic/pydantic-ai/pull/2715) - Remove `cases` and `averages` attributes from `pydantic_evals` spans\n- See [#2798](https://github.com/pydantic/pydantic-ai/pull/2798) - Change `ModelRequest.parts` and `ModelResponse.parts` types from `list` to `Sequence`\n- See [#2726](https://github.com/pydantic/pydantic-ai/pull/2726) - Default `InstrumentationSettings` version to 2\n- See [#2717](https://github.com/pydantic/pydantic-ai/pull/2717) - Remove errors when passing `AsyncRetrying` or `Retrying` object to `AsyncTenacityTransport` or `TenacityTransport` instead of `RetryConfig`\n\n### v0.x.x\n\nBefore V1, minor versions were used to introduce breaking changes:\n\n**v0.8.0 (2025-08-26)**\n\nSee [#2689](https://github.com/pydantic/pydantic-ai/pull/2689) - `AgentStreamEvent` was expanded to be a union of `ModelResponseStreamEvent` and `HandleResponseEvent`, simplifying the `event_stream_handler` function signature. Existing code accepting `AgentStreamEvent | HandleResponseEvent` wil",
+              "filename": "docs/changelog.md",
+              "final_rrf_score": 0.03252247488101534,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 1000,
+              "content": "5](https://github.com/pydantic/pydantic-ai/pull/2715) - Remove `cases` and `averages` attributes from `pydantic_evals` spans\n- See [#2798](https://github.com/pydantic/pydantic-ai/pull/2798) - Change `ModelRequest.parts` and `ModelResponse.parts` types from `list` to `Sequence`\n- See [#2726](https://github.com/pydantic/pydantic-ai/pull/2726) - Default `InstrumentationSettings` version to 2\n- See [#2717](https://github.com/pydantic/pydantic-ai/pull/2717) - Remove errors when passing `AsyncRetrying` or `Retrying` object to `AsyncTenacityTransport` or `TenacityTransport` instead of `RetryConfig`\n\n### v0.x.x\n\nBefore V1, minor versions were used to introduce breaking changes:\n\n**v0.8.0 (2025-08-26)**\n\nSee [#2689](https://github.com/pydantic/pydantic-ai/pull/2689) - `AgentStreamEvent` was expanded to be a union of `ModelResponseStreamEvent` and `HandleResponseEvent`, simplifying the `event_stream_handler` function signature. Existing code accepting `AgentStreamEvent | HandleResponseEvent` will continue to work.\n\n**v0.7.6 (2025-08-26)**\n\nThe following breaking change was inadvertently released in a patch version rather than a minor version:\n\nSee [#2670](https://github.com/pydantic/pydantic-ai/pull/2670) - `TenacityTransport` and `AsyncTenacityTransport` now require the use of `pydantic_ai.retries.RetryConfig` (which is just a `TypedDict` containing the kwargs to `tenacity.retry`) instead of `tenacity.Retrying` or `tenacity.AsyncRetrying`.\n\n**v0.7.0 (2025-08-12)**\n\nSee [#2458](https://github.com/pydantic/pydantic-ai/pull/2458) - `pydantic_ai.models.StreamedResponse` now yields a `FinalResultEvent` along with the existing `PartStartEvent` and `PartDeltaEvent`. If you're using `pydantic_ai.direct.model_request_stream` or `pydantic_ai.direct.model_request_stream_sync`, you may need to update your code to account for this.\n\nSee [#2458](https://github.com/pydantic/pydantic-ai/pull/2458) - `pydantic_ai.models.Model.request_stream` now receives a `run_context` argument. If you've i",
+              "filename": "docs/changelog.md",
+              "final_rrf_score": 0.03200204813108039,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 2000,
+              "content": "l continue to work.\n\n**v0.7.6 (2025-08-26)**\n\nThe following breaking change was inadvertently released in a patch version rather than a minor version:\n\nSee [#2670](https://github.com/pydantic/pydantic-ai/pull/2670) - `TenacityTransport` and `AsyncTenacityTransport` now require the use of `pydantic_ai.retries.RetryConfig` (which is just a `TypedDict` containing the kwargs to `tenacity.retry`) instead of `tenacity.Retrying` or `tenacity.AsyncRetrying`.\n\n**v0.7.0 (2025-08-12)**\n\nSee [#2458](https://github.com/pydantic/pydantic-ai/pull/2458) - `pydantic_ai.models.StreamedResponse` now yields a `FinalResultEvent` along with the existing `PartStartEvent` and `PartDeltaEvent`. If you're using `pydantic_ai.direct.model_request_stream` or `pydantic_ai.direct.model_request_stream_sync`, you may need to update your code to account for this.\n\nSee [#2458](https://github.com/pydantic/pydantic-ai/pull/2458) - `pydantic_ai.models.Model.request_stream` now receives a `run_context` argument. If you've implemented a custom `Model` subclass, you will need to account for this.\n\nSee [#2458](https://github.com/pydantic/pydantic-ai/pull/2458) - `pydantic_ai.models.StreamedResponse` now requires a `model_request_parameters` field and constructor argument. If you've implemented a custom `Model` subclass and implemented `request_stream`, you will need to account for this.\n\n**v0.6.0 (2025-08-06)**\n\nThis release was meant to clean some old deprecated code, so we can get a step closer to V1.\n\nSee [#2440](https://github.com/pydantic/pydantic-ai/pull/2440) - The `next` method was removed from the `Graph` class. Use `async with graph.iter(...) as run:  run.next()` instead.\n\nSee [#2441](https://github.com/pydantic/pydantic-ai/pull/2441) - The `result_type`, `result_tool_name` and `result_tool_description` arguments were removed from the `Agent` class. Use `output_type` instead.\n\nSee [#2441](https://github.com/pydantic/pydantic-ai/pull/2441) - The `result_retries` argument was also removed from the `",
+              "filename": "docs/changelog.md",
+              "final_rrf_score": 0.031009615384615385,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 6000,
+              "content": " (2025-06-18)**\n\nSee [#1142](https://github.com/pydantic/pydantic-ai/pull/1142) \u2014 Adds support for thinking parts.\n\nWe now convert the thinking blocks (`\"<think>...\"</think>\"`) in provider specific text parts to\nPydantic AI `ThinkingPart`s. Also, as part of this release, we made the choice to not send back the\n`ThinkingPart`s to the provider - the idea is to save costs on behalf of the user. In the future, we\nintend to add a setting to customize this behavior.\n\n**v0.2.0 (2025-05-12)**\n\nSee [#1647](https://github.com/pydantic/pydantic-ai/pull/1647) \u2014 usage makes sense as part of `ModelResponse`, and could be really useful in \"messages\" (really a sequence of requests and response). In this PR:\n\n- Adds `usage` to `ModelResponse` (field has a default factory of `Usage()` so it'll work to load data that doesn't have usage)\n- changes the return type of `Model.request` to just `ModelResponse` instead of `tuple[ModelResponse, Usage]`\n\n**v0.1.0 (2025-04-15)**\n\nSee [#1248](https://github.com/pydantic/pydantic-ai/pull/1248) \u2014 the attribute/parameter name `result` was renamed to `output` in many places. Hopefully all changes keep a deprecated attribute or parameter with the old name, so you should get many deprecation warnings.\n\nSee [#1484](https://github.com/pydantic/pydantic-ai/pull/1484) \u2014 `format_as_xml` was moved and made available to import from the package root, e.g. `from pydantic_ai import format_as_xml`.\n\n## Full Changelog\n\n<div id=\"display-changelog\">\n  For the full changelog, see <a href=\"https://github.com/pydantic/pydantic-ai/releases\">GitHub Releases</a>.\n</div>\n\n<script>\n  fetch('/changelog.html').then(r => {\n    if (r.ok) {\n      r.text().then(t => {\n        document.getElementById('display-changelog').innerHTML = t;\n      });\n    }\n  });\n</script>",
+              "filename": "docs/changelog.md",
+              "final_rrf_score": 0.030303030303030304,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 0,
+              "content": "# Pydantic Model\n\nSimple example of using Pydantic AI to construct a Pydantic model from a text input.\n\nDemonstrates:\n\n- [structured `output_type`](../output.md#structured-output)\n\n## Running the Example\n\nWith [dependencies installed and environment variables set](./setup.md#usage), run:\n\n```bash\npython/uv-run -m pydantic_ai_examples.pydantic_model\n```\n\nThis examples uses `openai:gpt-4o` by default, but it works well with other models, e.g. you can run it\nwith Gemini using:\n\n```bash\nPYDANTIC_AI_MODEL=gemini-1.5-pro python/uv-run -m pydantic_ai_examples.pydantic_model\n```\n\n(or `PYDANTIC_AI_MODEL=gemini-1.5-flash ...`)\n\n## Example Code\n\n```snippet {path=\"/examples/pydantic_ai_examples/pydantic_model.py\"}```",
+              "filename": "docs/examples/pydantic-model.md",
+              "final_rrf_score": 0.01639344262295082,
+              "search_type": "hybrid"
+            }
+          ],
+          "tool_call_id": "call_ju3F8dg5X0ZWbe1fyNghKsgL",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:09:46.022673+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "In version v0.7.6 of Pydantic AI, a breaking change was introduced that specifically affects how retries are managed with the transport classes. The key change is:\n\n- **Breaking Change**: The `TenacityTransport` and `AsyncTenacityTransport` now require the use of `pydantic_ai.retries.RetryConfig` instead of `tenacity.Retrying` or `tenacity.AsyncRetrying`. The `RetryConfig` is a `TypedDict` containing the keyword arguments for `tenacity.retry`.\n\n### Migration Steps\n\nTo migrate your existing code to be compliant with this change, you will need to:\n\n1. **Update Transport Creation**: Wherever you construct instances of `TenacityTransport` or `AsyncTenacityTransport`, replace the `Retrying` or `AsyncRetrying` objects with a `RetryConfig`.\n   \n   For instance, if you previously had:\n   ```python\n   from tenacity import Retrying\n\n   transport = TenacityTransport(retries=Retrying(...))\n   ```\n   You will now create it as:\n   ```python\n   from pydantic_ai.retries import RetryConfig\n   \n   retry_config = RetryConfig(max_attempts=5, retry_delay=2)  # Customize as necessary\n   transport = TenacityTransport(retries=retry_config)\n   ```\n\n2. **Ensure Compatibility**: Review other parts of your code that might still be using `Retrying` or `AsyncRetrying` directly and replace them with the `RetryConfig`.\n\nThis change was inadvertently released in a patch version instead of a minor version, so you should ensure to adjust your code as soon as possible to avoid issues in future updates.\n\nFor more details on this and other breaking changes, you can refer to the [CHANGELOG](https://github.com/pydantic/pydantic-ai/blob/main/docs/changelog.md).",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2956,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 383,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:46+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeVugSAySBWQfqOzK6DkFjfO33Db",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

@@ -1,0 +1,142 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "How do I set up a FastMCP server that allows sampling from a language model inside a custom tool?",
+          "timestamp": "2025-10-03T18:10:41.069223+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"FastMCP server setup language model sampling custom tool\"}",
+          "tool_call_id": "call_9AfOduC2qb5h0oQ0BtlvNfMv",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 233,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 24,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:10:41+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeWnTkCGTJtseSQ822OH4N6szsxC",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 2000,
+              "content": "odel`][pydantic_ai.models.mcp_sampling.MCPSamplingModel].\n\nWe can extend the above example to use sampling so instead of connecting directly to the LLM, the agent calls back through the MCP client to make LLM calls.\n\n```py {title=\"mcp_server_sampling.py\"}\nfrom mcp.server.fastmcp import Context, FastMCP\n\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.mcp_sampling import MCPSamplingModel\n\nserver = FastMCP('Pydantic AI Server with sampling')\nserver_agent = Agent(system_prompt='always reply in rhyme')\n\n\n@server.tool()\nasync def poet(ctx: Context, theme: str) -> str:\n    \"\"\"Poem generator\"\"\"\n    r = await server_agent.run(f'write a poem about {theme}', model=MCPSamplingModel(session=ctx.session))\n    return r.output\n\n\nif __name__ == '__main__':\n    server.run()  # run the server over stdio\n```\n\nThe [above](#simple-client) client does not support sampling, so if you tried to use it with this server you'd get an error.\n\nThe simplest way to support sampling in an MCP client is to [use](./client.md#mcp-sampling) a Pydantic AI agent as the client, but if you wanted to support sampling with the vanilla MCP SDK, you could do so like this:\n\n```py {title=\"mcp_client_sampling.py\" requires=\"mcp_server_sampling.py\"}\nimport asyncio\nfrom typing import Any\n\nfrom mcp import ClientSession, StdioServerParameters\nfrom mcp.client.stdio import stdio_client\nfrom mcp.shared.context import RequestContext\nfrom mcp.types import (\n    CreateMessageRequestParams,\n    CreateMessageResult,\n    ErrorData,\n    TextContent,\n)\n\n\nasync def sampling_callback(\n    context: RequestContext[ClientSession, Any], params: CreateMessageRequestParams\n) -> CreateMessageResult | ErrorData:\n    print('sampling system prompt:', params.systemPrompt)\n    #> sampling system prompt: always reply in rhyme\n    print('sampling messages:', params.messages)\n    \"\"\"\n    sampling messages:\n    [\n        SamplingMessage(\n            role='user',\n            content=TextContent(\n                type='text',\n                t",
+              "filename": "docs/mcp/server.md",
+              "final_rrf_score": 0.03278688524590164,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 15000,
+              "content": "Pydantic AI supports sampling as both a client and server. See the [server](./server.md#mcp-sampling) documentation for details on how to use sampling within a server.\n\nSampling is automatically supported by Pydantic AI agents when they act as a client.\n\nTo be able to use sampling, an MCP server instance needs to have a [`sampling_model`][pydantic_ai.mcp.MCPServer.sampling_model] set. This can be done either directly on the server using the constructor keyword argument or the property, or by using [`agent.set_mcp_sampling_model()`][pydantic_ai.Agent.set_mcp_sampling_model] to set the agent's model or one specified as an argument as the sampling model on all MCP servers registered with that agent.\n\nLet's say we have an MCP server that wants to use sampling (in this case to generate an SVG as per the tool arguments).\n\n??? example \"Sampling MCP Server\"\n\n    ```python {title=\"generate_svg.py\"}\n    import re\n    from pathlib import Path\n\n    from mcp import SamplingMessage\n    from mcp.server.fastmcp import Context, FastMCP\n    from mcp.types import TextContent\n\n    app = FastMCP()\n\n\n    @app.tool()\n    async def image_generator(ctx: Context, subject: str, style: str) -> str:\n        prompt = f'{subject=} {style=}'\n        # `ctx.session.create_message` is the sampling call\n        result = await ctx.session.create_message(\n            [SamplingMessage(role='user', content=TextContent(type='text', text=prompt))],\n            max_tokens=1_024,\n            system_prompt='Generate an SVG image as per the user input',\n        )\n        assert isinstance(result.content, TextContent)\n\n        path = Path(f'{subject}_{style}.svg')\n        # remove triple backticks if the svg was returned within markdown\n        if m := re.search(r'^```\\w*$(.+?)```$', result.content.text, re.S | re.M):\n            path.write_text(m.group(1))\n        else:\n            path.write_text(result.content.text)\n        return f'See {path}'\n\n\n    if __name__ == '__main__':\n        # run the server via st",
+              "filename": "docs/mcp/client.md",
+              "final_rrf_score": 0.030776515151515152,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 14000,
+              "content": "t you don't want to provision them each with their own LLM credentials or when a public MCP server would like the connecting client to pay for LLM calls.\n\n    Confusingly it has nothing to do with the concept of \"sampling\" in observability, or frankly the concept of \"sampling\" in any other domain.\n\n    ??? info \"Sampling Diagram\"\n        Here's a mermaid diagram that may or may not make the data flow clearer:\n\n        ```mermaid\n        sequenceDiagram\n            participant LLM\n            participant MCP_Client as MCP client\n            participant MCP_Server as MCP server\n\n            MCP_Client->>LLM: LLM call\n            LLM->>MCP_Client: LLM tool call response\n\n            MCP_Client->>MCP_Server: tool call\n            MCP_Server->>MCP_Client: sampling \"create message\"\n\n            MCP_Client->>LLM: LLM call\n            LLM->>MCP_Client: LLM text response\n\n            MCP_Client->>MCP_Server: sampling response\n            MCP_Server->>MCP_Client: tool call response\n        ```\n\nPydantic AI supports sampling as both a client and server. See the [server](./server.md#mcp-sampling) documentation for details on how to use sampling within a server.\n\nSampling is automatically supported by Pydantic AI agents when they act as a client.\n\nTo be able to use sampling, an MCP server instance needs to have a [`sampling_model`][pydantic_ai.mcp.MCPServer.sampling_model] set. This can be done either directly on the server using the constructor keyword argument or the property, or by using [`agent.set_mcp_sampling_model()`][pydantic_ai.Agent.set_mcp_sampling_model] to set the agent's model or one specified as an argument as the sampling model on all MCP servers registered with that agent.\n\nLet's say we have an MCP server that wants to use sampling (in this case to generate an SVG as per the tool arguments).\n\n??? example \"Sampling MCP Server\"\n\n    ```python {title=\"generate_svg.py\"}\n    import re\n    from pathlib import Path\n\n    from mcp import SamplingMessage\n    from mcp.serv",
+              "filename": "docs/mcp/client.md",
+              "final_rrf_score": 0.030621785881252923,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 0,
+              "content": "# Server\n\nPydantic AI models can also be used within MCP Servers.\n\n## MCP Server\n\nHere's a simple example of a [Python MCP server](https://github.com/modelcontextprotocol/python-sdk) using Pydantic AI within a tool call:\n\n```py {title=\"mcp_server.py\"}\nfrom mcp.server.fastmcp import FastMCP\n\nfrom pydantic_ai import Agent\n\nserver = FastMCP('Pydantic AI Server')\nserver_agent = Agent(\n    'anthropic:claude-3-5-haiku-latest', system_prompt='always reply in rhyme'\n)\n\n\n@server.tool()\nasync def poet(theme: str) -> str:\n    \"\"\"Poem generator\"\"\"\n    r = await server_agent.run(f'write a poem about {theme}')\n    return r.output\n\n\nif __name__ == '__main__':\n    server.run()\n```\n\n## Simple client\n\nThis server can be queried with any MCP client. Here is an example using the Python SDK directly:\n\n```py {title=\"mcp_client.py\" requires=\"mcp_server.py\" dunder_name=\"not_main\"}\nimport asyncio\nimport os\n\nfrom mcp import ClientSession, StdioServerParameters\nfrom mcp.client.stdio import stdio_client\n\n\nasync def client():\n    server_params = StdioServerParameters(\n        command='python', args=['mcp_server.py'], env=os.environ\n    )\n    async with stdio_client(server_params) as (read, write):\n        async with ClientSession(read, write) as session:\n            await session.initialize()\n            result = await session.call_tool('poet', {'theme': 'socks'})\n            print(result.content[0].text)\n            \"\"\"\n            Oh, socks, those garments soft and sweet,\n            That nestle softly 'round our feet,\n            From cotton, wool, or blended thread,\n            They keep our toes from feeling dread.\n            \"\"\"\n\n\nif __name__ == '__main__':\n    asyncio.run(client())\n```\n\n## MCP Sampling\n\n!!! info \"What is MCP Sampling?\"\n    See the [MCP client docs](./client.md#mcp-sampling) for details of what MCP sampling is, and how you can support it when using Pydantic AI as an MCP client.\n\nWhen Pydantic AI agents are used within MCP servers, they can use sampling via [`MCPSamplingM",
+              "filename": "docs/mcp/server.md",
+              "final_rrf_score": 0.03057889822595705,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 3000,
+              "content": "./client.md#mcp-sampling) a Pydantic AI agent as the client, but if you wanted to support sampling with the vanilla MCP SDK, you could do so like this:\n\n```py {title=\"mcp_client_sampling.py\" requires=\"mcp_server_sampling.py\"}\nimport asyncio\nfrom typing import Any\n\nfrom mcp import ClientSession, StdioServerParameters\nfrom mcp.client.stdio import stdio_client\nfrom mcp.shared.context import RequestContext\nfrom mcp.types import (\n    CreateMessageRequestParams,\n    CreateMessageResult,\n    ErrorData,\n    TextContent,\n)\n\n\nasync def sampling_callback(\n    context: RequestContext[ClientSession, Any], params: CreateMessageRequestParams\n) -> CreateMessageResult | ErrorData:\n    print('sampling system prompt:', params.systemPrompt)\n    #> sampling system prompt: always reply in rhyme\n    print('sampling messages:', params.messages)\n    \"\"\"\n    sampling messages:\n    [\n        SamplingMessage(\n            role='user',\n            content=TextContent(\n                type='text',\n                text='write a poem about socks',\n                annotations=None,\n                meta=None,\n            ),\n        )\n    ]\n    \"\"\"\n\n    # TODO get the response content by calling an LLM...\n    response_content = 'Socks for a fox.'\n\n    return CreateMessageResult(\n        role='assistant',\n        content=TextContent(type='text', text=response_content),\n        model='fictional-llm',\n    )\n\n\nasync def client():\n    server_params = StdioServerParameters(command='python', args=['mcp_server_sampling.py'])\n    async with stdio_client(server_params) as (read, write):\n        async with ClientSession(read, write, sampling_callback=sampling_callback) as session:\n            await session.initialize()\n            result = await session.call_tool('poet', {'theme': 'socks'})\n            print(result.content[0].text)\n            #> Socks for a fox.\n\n\nif __name__ == '__main__':\n    asyncio.run(client())\n```\n\n_(This example is complete, it can be run \"as is\")_",
+              "filename": "docs/mcp/server.md",
+              "final_rrf_score": 0.03055037313432836,
+              "search_type": "hybrid"
+            }
+          ],
+          "tool_call_id": "call_9AfOduC2qb5h0oQ0BtlvNfMv",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:10:42.411350+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "To set up a FastMCP server that allows sampling from a language model inside a custom tool, you can use the following example code. This setup involves creating a server with an agent and defining a tool that interacts with the language model using sampling capabilities.\n\n### Step 1: Create the FastMCP Server\n\nHere\u2019s a basic implementation to create a FastMCP server that uses a language model for generating poetry:\n\n```python\n# mcp_server_sampling.py\nfrom mcp.server.fastmcp import Context, FastMCP\nfrom pydantic_ai import Agent\nfrom pydantic_ai.models.mcp_sampling import MCPSamplingModel\n\nserver = FastMCP('Pydantic AI Server with sampling')\nserver_agent = Agent(system_prompt='always reply in rhyme')\n\n@server.tool()\nasync def poet(ctx: Context, theme: str) -> str:\n    \"\"\"Poem generator\"\"\"\n    r = await server_agent.run(f'write a poem about {theme}', model=MCPSamplingModel(session=ctx.session))\n    return r.output\n\nif __name__ == '__main__':\n    server.run()  # run the server over stdio\n```\n\n### Step 2: Create a Client to Interact with the Server\n\nYou will also need a client that can call this server. The following code demonstrates how you can interact with the `poet` tool:\n\n```python\n# mcp_client_sampling.py\nimport asyncio\nimport os\nfrom mcp import ClientSession, StdioServerParameters\nfrom mcp.client.stdio import stdio_client\n\nasync def client():\n    server_params = StdioServerParameters(\n        command='python', args=['mcp_server_sampling.py'], env=os.environ\n    )\n    async with stdio_client(server_params) as (read, write):\n        async with ClientSession(read, write) as session:\n            await session.initialize()\n            result = await session.call_tool('poet', {'theme': 'socks'})\n            print(result.content[0].text)\n\nif __name__ == '__main__':\n    asyncio.run(client())\n```\n\n### Explanation\n\n1. **Server Setup**: In the server code (`mcp_server_sampling.py`), you define a FastMCP server instance and configure an agent with a specific system prompt. The `poet` tool generates poetry based on the provided theme using the sampling model.\n\n2. **Client Interaction**: The client (`mcp_client_sampling.py`) connects to the server and calls the `poet` tool, passing a theme. The response from the server is printed out.\n\n### Notes\n\n- Ensure that both the server and client are run in an environment that can execute the server script.\n- The server relies on the Pydantic AI model capabilities to perform sampling.\n- Adjust the prompts and model as necessary depending on your application's needs.\n\nFor additional details about sampling and tool creation, you can refer to the [MCP Server Documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/mcp/server.md) and [MCP Client Documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/mcp/client.md).",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 3015,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 643,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:10:42+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeWoLc6BgAQXyx3r4FivEW6Px5n1",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

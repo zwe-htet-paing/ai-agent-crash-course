@@ -1,0 +1,143 @@
+{
+  "agent_name": "gh_agent",
+  "system_prompt": [
+    "\nYou are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.\n"
+  ],
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "tools": [
+    "hybrid_search"
+  ],
+  "messages": [
+    {
+      "parts": [
+        {
+          "content": "In the Data Analyst example, how do I use agent dependencies to pass a pandas DataFrame from one tool to another within the same run?",
+          "timestamp": "2025-10-03T18:09:53.889535+00:00",
+          "part_kind": "user-prompt"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "args": "{\"query\":\"Data Analyst example agent dependencies pandas DataFrame pass tool\",\"num_results\":5}",
+          "tool_call_id": "call_Dk3KNTdeyxXnUGI14nppLpK9",
+          "part_kind": "tool-call"
+        }
+      ],
+      "usage": {
+        "input_tokens": 239,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 29,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:54+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "tool_calls"
+      },
+      "provider_response_id": "chatcmpl-CMeW267oqdtWxQ10qV6ilcKQcGB38",
+      "finish_reason": "tool_call"
+    },
+    {
+      "parts": [
+        {
+          "tool_name": "hybrid_search",
+          "content": [
+            {
+              "start": 0,
+              "content": "# Data Analyst\n\nSometimes in an agent workflow, the agent does not need to know the exact tool\noutput, but still needs to process the tool output in some ways. This is\nespecially common in data analytics: the agent needs to know that the result of a\nquery tool is a `DataFrame` with certain named columns, but not\nnecessarily the content of every single row.\n\nWith Pydantic AI, you can use a [dependencies object](../dependencies.md) to\nstore the result from one tool and use it in another tool.\n\nIn this example, we'll build an agent that analyzes the [Rotten Tomatoes movie review dataset from Cornell](https://huggingface.co/datasets/cornell-movie-review-data/rotten_tomatoes).\n\n\nDemonstrates:\n\n- [agent dependencies](../dependencies.md)\n\n\n## Running the Example\n\nWith [dependencies installed and environment variables set](./setup.md#usage), run:\n\n```bash\npython/uv-run -m pydantic_ai_examples.data_analyst\n```\n\n\nOutput (debug):\n\n\n> Based on my analysis of the Cornell Movie Review dataset (rotten_tomatoes), there are **4,265 negative comments** in the training split. These are the reviews labeled as 'neg' (represented by 0 in the dataset).\n\n\n\n## Example Code\n\n```snippet {path=\"/examples/pydantic_ai_examples/data_analyst.py\"}```\n\n\n## Appendix\n\n### Choosing a Model\n\nThis example requires using a model that understands DuckDB SQL. You can check with `clai`:\n\n```sh\n> clai -m bedrock:us.anthropic.claude-3-7-sonnet-20250219-v1:0\nclai - Pydantic AI CLI v0.0.1.dev920+41dd069 with bedrock:us.anthropic.claude-3-7-sonnet-20250219-v1:0\nclai \u27a4 do you understand duckdb sql?\n# DuckDB SQL\n\nYes, I understand DuckDB SQL. DuckDB is an in-process analytical SQL database\nthat uses syntax similar to PostgreSQL. It specializes in analytical queries\nand is designed for high-performance analysis of structured data.\n\nSome key features of DuckDB SQL include:\n\n \u2022 OLAP (Online Analytical Processing) optimized\n \u2022 Columnar-vectorized query execution\n \u2022 Standard SQL support with PostgreSQL compatibility\n \u2022 ",
+              "filename": "docs/examples/data-analyst.md",
+              "final_rrf_score": 0.03278688524590164,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 1000,
+              "content": "nused_dependencies.py\"}\nfrom dataclasses import dataclass\n\nimport httpx\n\nfrom pydantic_ai import Agent\n\n\n@dataclass\nclass MyDeps:  # (1)!\n    api_key: str\n    http_client: httpx.AsyncClient\n\n\nagent = Agent(\n    'openai:gpt-4o',\n    deps_type=MyDeps,  # (2)!\n)\n\n\nasync def main():\n    async with httpx.AsyncClient() as client:\n        deps = MyDeps('foobar', client)\n        result = await agent.run(\n            'Tell me a joke.',\n            deps=deps,  # (3)!\n        )\n        print(result.output)\n        #> Did you hear about the toothpaste scandal? They called it Colgate.\n```\n\n1. Define a dataclass to hold dependencies.\n2. Pass the dataclass type to the `deps_type` argument of the [`Agent` constructor][pydantic_ai.Agent.__init__]. **Note**: we're passing the type here, NOT an instance, this parameter is not actually used at runtime, it's here so we can get full type checking of the agent.\n3. When running the agent, pass an instance of the dataclass to the `deps` parameter.\n\n_(This example is complete, it can be run \"as is\" \u2014 you'll need to add `asyncio.run(main())` to run `main`)_\n\n## Accessing Dependencies\n\nDependencies are accessed through the [`RunContext`][pydantic_ai.tools.RunContext] type, this should be the first parameter of system prompt functions etc.\n\n```python {title=\"system_prompt_dependencies.py\" hl_lines=\"20-27\"}\nfrom dataclasses import dataclass\n\nimport httpx\n\nfrom pydantic_ai import Agent, RunContext\n\n\n@dataclass\nclass MyDeps:\n    api_key: str\n    http_client: httpx.AsyncClient\n\n\nagent = Agent(\n    'openai:gpt-4o',\n    deps_type=MyDeps,\n)\n\n\n@agent.system_prompt  # (1)!\nasync def get_system_prompt(ctx: RunContext[MyDeps]) -> str:  # (2)!\n    response = await ctx.deps.http_client.get(  # (3)!\n        'https://example.com',\n        headers={'Authorization': f'Bearer {ctx.deps.api_key}'},  # (4)!\n    )\n    response.raise_for_status()\n    return f'Prompt: {response.text}'\n\n\nasync def main():\n    async with httpx.AsyncClient() as client:\n        deps = My",
+              "filename": "docs/dependencies.md",
+              "final_rrf_score": 0.030776515151515152,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 0,
+              "content": "# Dependencies\n\nPydantic AI uses a dependency injection system to provide data and services to your agent's [system prompts](agents.md#system-prompts), [tools](tools.md) and [output validators](output.md#output-validator-functions).\n\nMatching Pydantic AI's design philosophy, our dependency system tries to use existing best practice in Python development rather than inventing esoteric \"magic\", this should make dependencies type-safe, understandable easier to test and ultimately easier to deploy in production.\n\n## Defining Dependencies\n\nDependencies can be any python type. While in simple cases you might be able to pass a single object as a dependency (e.g. an HTTP connection), [dataclasses][] are generally a convenient container when your dependencies included multiple objects.\n\nHere's an example of defining an agent that requires dependencies.\n\n(**Note:** dependencies aren't actually used in this example, see [Accessing Dependencies](#accessing-dependencies) below)\n\n```python {title=\"unused_dependencies.py\"}\nfrom dataclasses import dataclass\n\nimport httpx\n\nfrom pydantic_ai import Agent\n\n\n@dataclass\nclass MyDeps:  # (1)!\n    api_key: str\n    http_client: httpx.AsyncClient\n\n\nagent = Agent(\n    'openai:gpt-4o',\n    deps_type=MyDeps,  # (2)!\n)\n\n\nasync def main():\n    async with httpx.AsyncClient() as client:\n        deps = MyDeps('foobar', client)\n        result = await agent.run(\n            'Tell me a joke.',\n            deps=deps,  # (3)!\n        )\n        print(result.output)\n        #> Did you hear about the toothpaste scandal? They called it Colgate.\n```\n\n1. Define a dataclass to hold dependencies.\n2. Pass the dataclass type to the `deps_type` argument of the [`Agent` constructor][pydantic_ai.Agent.__init__]. **Note**: we're passing the type here, NOT an instance, this parameter is not actually used at runtime, it's here so we can get full type checking of the agent.\n3. When running the agent, pass an instance of the dataclass to the `deps` parameter.\n\n_(This exam",
+              "filename": "docs/dependencies.md",
+              "final_rrf_score": 0.03057889822595705,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 1000,
+              "content": "n_tomatoes), there are **4,265 negative comments** in the training split. These are the reviews labeled as 'neg' (represented by 0 in the dataset).\n\n\n\n## Example Code\n\n```snippet {path=\"/examples/pydantic_ai_examples/data_analyst.py\"}```\n\n\n## Appendix\n\n### Choosing a Model\n\nThis example requires using a model that understands DuckDB SQL. You can check with `clai`:\n\n```sh\n> clai -m bedrock:us.anthropic.claude-3-7-sonnet-20250219-v1:0\nclai - Pydantic AI CLI v0.0.1.dev920+41dd069 with bedrock:us.anthropic.claude-3-7-sonnet-20250219-v1:0\nclai \u27a4 do you understand duckdb sql?\n# DuckDB SQL\n\nYes, I understand DuckDB SQL. DuckDB is an in-process analytical SQL database\nthat uses syntax similar to PostgreSQL. It specializes in analytical queries\nand is designed for high-performance analysis of structured data.\n\nSome key features of DuckDB SQL include:\n\n \u2022 OLAP (Online Analytical Processing) optimized\n \u2022 Columnar-vectorized query execution\n \u2022 Standard SQL support with PostgreSQL compatibility\n \u2022 Support for complex analytical queries\n \u2022 Efficient handling of CSV/Parquet/JSON files\n\nI can help you with DuckDB SQL queries, schema design, optimization, or other\nDuckDB-related questions.\n```",
+              "filename": "docs/examples/data-analyst.md",
+              "final_rrf_score": 0.016129032258064516,
+              "search_type": "hybrid"
+            },
+            {
+              "start": 7000,
+              "content": "ple [in the docs](https://ai.pydantic.dev/#tools-dependency-injection-example))**\n\n```python\nfrom dataclasses import dataclass\n\nfrom pydantic import BaseModel, Field\nfrom pydantic_ai import Agent, RunContext\n\nfrom bank_database import DatabaseConn\n\n\n# SupportDependencies is used to pass data, connections, and logic into the model that will be needed when running\n# instructions and tool functions. Dependency injection provides a type-safe way to customise the behavior of your agents.\n@dataclass\nclass SupportDependencies:\n    customer_id: int\n    db: DatabaseConn\n\n\n# This Pydantic model defines the structure of the output returned by the agent.\nclass SupportOutput(BaseModel):\n    support_advice: str = Field(description='Advice returned to the customer')\n    block_card: bool = Field(description=\"Whether to block the customer's card\")\n    risk: int = Field(description='Risk level of query', ge=0, le=10)\n\n\n# This agent will act as first-tier support in a bank.\n# Agents are generic in the type of dependencies they accept and the type of output they return.\n# In this case, the support agent has type `Agent[SupportDependencies, SupportOutput]`.\nsupport_agent = Agent(\n    'openai:gpt-5',\n    deps_type=SupportDependencies,\n    # The response from the agent will, be guaranteed to be a SupportOutput,\n    # if validation fails the agent is prompted to try again.\n    output_type=SupportOutput,\n    instructions=(\n        'You are a support agent in our bank, give the '\n        'customer support and judge the risk level of their query.'\n    ),\n)\n\n\n# Dynamic instructions can make use of dependency injection.\n# Dependencies are carried via the `RunContext` argument, which is parameterized with the `deps_type` from above.\n# If the type annotation here is wrong, static type checkers will catch it.\n@support_agent.instructions\nasync def add_customer_name(ctx: RunContext[SupportDependencies]) -> str:\n    customer_name = await ctx.deps.db.customer_name(id=ctx.deps.customer_id)\n    return f",
+              "filename": "README.md",
+              "score": 0.5196219682693481,
+              "search_type": "hybrid",
+              "final_rrf_score": 0.016129032258064516
+            }
+          ],
+          "tool_call_id": "call_Dk3KNTdeyxXnUGI14nppLpK9",
+          "metadata": null,
+          "timestamp": "2025-10-03T18:09:55.015924+00:00",
+          "part_kind": "tool-return"
+        }
+      ],
+      "instructions": "You are a helpful assistant that answers questions about documentation.  \n\nUse the search tool to find relevant information from the course materials before answering questions.  \n\nIf you can find specific information through search, use it to provide accurate answers.\n\nAlways include references by citing the filename of the source material you used.\nReplace it with the full path to the GitHub repository:\n\"https://github.com/pydantic/pydantic-ai/blob/main/\"\nFormat: [LINK TITLE](FULL_GITHUB_LINK)\n\n\nIf the search doesn't return relevant results, let the user know and provide general guidance.",
+      "kind": "request"
+    },
+    {
+      "parts": [
+        {
+          "content": "To pass a pandas DataFrame from one tool to another within the same run in the Data Analyst example using agent dependencies, you can follow these steps:\n\n1. **Define the Dependencies**: You start by creating a dataclass that will hold the pandas DataFrame and any other necessary objects required for your operations.\n\n2. **Initialize the Agent with Dependencies**: When you create your agent, you specify the type of the dependencies dataclass.\n\n3. **Use the Dependencies in the Tools**: When you run the tools within your agent, you'll pass an instance of your dependencies class. Within your system prompt or tool function, you can access the dependencies using the `RunContext`.\n\n### Example Code Snippet\n\nHere\u2019s an illustrative code snippet based on the Data Analyst context:\n\n```python\nfrom dataclasses import dataclass\nimport pandas as pd\nfrom pydantic_ai import Agent, RunContext\n\n@dataclass\nclass DataAnalysisDependencies:\n    dataframe: pd.DataFrame\n\n# Initialize the Agent\nagent = Agent(\n    'openai:gpt-4',  # Specify your model here\n    deps_type=DataAnalysisDependencies\n)\n\n@agent.system_prompt\nasync def analyze_data(ctx: RunContext[DataAnalysisDependencies]) -> str:\n    df = ctx.deps.dataframe\n    # Perform your data analysis here\n    result = df.describe()  # Example operation\n    return result.to_string()\n\nasync def main():\n    # Assume you have a DataFrame ready for analysis\n    data = {\n        \"column1\": [1, 2, 3],\n        \"column2\": [4, 5, 6]\n    }\n    df = pd.DataFrame(data)\n    \n    deps = DataAnalysisDependencies(dataframe=df)\n    result = await agent.run(\"Analyze the given DataFrame.\", deps=deps)\n    print(result.output)\n\n# You would need to run this main function with asyncio\n```\n\n### Key Points:\n\n- The `DataAnalysisDependencies` class is used to encapsulate the DataFrame.\n- The agent is set up to accept the dependencies.\n- By utilizing `RunContext`, you can access the DataFrame within your analysis function.\n\nThis structure allows you to effectively pass complex data types like a pandas DataFrame through your agent operations while maintaining type safety and clarity.\n\nFor more information on dependencies and their use in Pydantic AI, you can refer to the documentation:\n- [Data Analyst Example Documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/examples/data-analyst.md)\n- [Dependencies Documentation](https://github.com/pydantic/pydantic-ai/blob/main/docs/dependencies.md)",
+          "id": null,
+          "part_kind": "text"
+        }
+      ],
+      "usage": {
+        "input_tokens": 2899,
+        "cache_write_tokens": 0,
+        "cache_read_tokens": 0,
+        "output_tokens": 539,
+        "input_audio_tokens": 0,
+        "cache_audio_read_tokens": 0,
+        "output_audio_tokens": 0,
+        "details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        }
+      },
+      "model_name": "gpt-4o-mini-2024-07-18",
+      "timestamp": "2025-10-03T18:09:55+00:00",
+      "kind": "response",
+      "provider_name": "openai",
+      "provider_details": {
+        "finish_reason": "stop"
+      },
+      "provider_response_id": "chatcmpl-CMeW3KaX3Mfcjj2HJvB6RWkSkj6tx",
+      "finish_reason": "stop"
+    }
+  ],
+  "source": "ai-generated"
+}

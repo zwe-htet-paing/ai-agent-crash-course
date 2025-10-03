@@ -1,9 +1,12 @@
 # 🤖 Pydantic-ai Assistant
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-agent-crash-course-b7ab4pmqon2kfhnkb4unm7.streamlit.app/)
+
 An interactive AI-powered assistant for exploring and answering questions about the [pydantic/pydantic-ai](https://github.com/pydantic/pydantic-ai) repository.  
 Built as a hands-on project for the [AI Agents Crash Course](https://alexeygrigorev.com/aihero/).
 
 ---
+
 
 ## Overview
 
@@ -19,6 +22,13 @@ This project demonstrates how to build modern AI agents that:
 - Experiment with evaluation and logging workflows
 
 ---
+
+## 🚀 Live Demo
+
+Try the deployed Pyantic-ai Agent for the Pydantic AI documentation.  
+Open the live app here: [Pydantic Agent — Pydantic AI Docs](https://ai-agent-crash-course-b7ab4pmqon2kfhnkb4unm7.streamlit.app/)
+
+
 
 ## Installation
 
@@ -46,10 +56,11 @@ For API key management, use [direnv](https://direnv.net/) (see `.envrc.sample`).
 
 ### API Key
 
-Set your OpenAI API key:
+Set your OpenAIAPI/GroqAPI key:
 
 ```bash
 export OPENAI_API_KEY="your-key"
+export GROQ_API_KEY="your-key"
 ```
 
 ### Terminal Chat
@@ -78,7 +89,7 @@ Visit [http://localhost:8501](http://localhost:8501) to chat in your browser.
 ## Features
 
 - 🔎 Hybrid search (keyword + vector) over repo docs
-- 🤖 AI answers with source links (using Pydantic AI + GPT-4o-mini)
+- 🤖 AI answers with source links (using Pydantic AI + OpenAI/Groq)
 - 🖥️ Terminal and Streamlit chat interfaces
 - 📝 Automatic logging of all interactions
 - 📊 Evaluation notebooks for agent quality
